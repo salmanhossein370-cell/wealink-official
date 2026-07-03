@@ -15,21 +15,41 @@ interface Props {
 
 const LogoItem: React.FC<{ logo: TickerLogo }> = ({ logo }) => {
   const [hasError, setHasError] = useState(false);
+  const [isActive, setIsActive] = useState(false);
+
+  const handleInteraction = () => {
+    setIsActive(true);
+    setTimeout(() => {
+      setIsActive(false);
+    }, 800); // Rains color for 800ms
+  };
 
   return (
-    <div className="flex-shrink-0 flex items-center justify-center h-[36px] sm:h-[42px] w-[110px] sm:w-[130px] select-none px-2 text-center transition-transform duration-300 hover:scale-105">
+    <div 
+      onClick={handleInteraction}
+      onTouchStart={handleInteraction}
+      className="flex-shrink-0 flex items-center justify-center h-[36px] sm:h-[42px] w-[110px] sm:w-[130px] select-none px-2 text-center transition-transform duration-300 hover:scale-105 active:scale-95 cursor-pointer"
+    >
       {!hasError && logo.url ? (
         <img
           src={logo.url}
           alt={logo.name}
-          className="h-[36px] sm:h-[42px] max-h-full w-auto max-w-full object-contain filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+          className={`h-[36px] sm:h-[42px] max-h-full w-auto max-w-full object-contain transition-all duration-300 ${
+            isActive 
+              ? "filter-none opacity-100 scale-105" 
+              : "filter grayscale opacity-40 hover:grayscale-0 hover:opacity-100 active:grayscale-0 active:opacity-100"
+          }`}
           loading="eager"
           decoding="async"
           draggable={false}
           onError={() => setHasError(true)}
         />
       ) : (
-        <span className="text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-900 transition-colors">
+        <span className={`text-xs sm:text-sm font-semibold transition-all duration-300 ${
+          isActive 
+            ? "text-slate-900 font-bold scale-105" 
+            : "text-slate-400 hover:text-slate-900 active:text-slate-900"
+        }`}>
           {logo.name}
         </span>
       )}
