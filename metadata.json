@@ -1,0 +1,6 @@
+{
+  "name": "Wealink",
+  "description": "A modern, secure, and intuitive web application for global money transfers, featuring real-time rate calculators, transaction histories, card wallet, and quick contact remittance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

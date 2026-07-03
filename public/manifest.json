@@ -1,0 +1,22 @@
+{
+  "name": "Wealink",
+  "short_name": "Wealink",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/wealink-final-logo.jpg.png",
+      "sizes": "2000x2000",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/wealink-final-logo.jpg.png",
+      "sizes": "2000x2000",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
