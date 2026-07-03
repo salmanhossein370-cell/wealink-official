@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { useTranslation } from "react-i18next";
+import { motion } from "motion/react";
 import { toast } from "sonner";
 import { 
   ArrowLeft, 
@@ -52,7 +53,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
   const [avantiClicked, setAvantiClicked] = useState(false);
   const [creaProfiloClicked, setCreaProfiloClicked] = useState(false);
   const [giaProfiloClicked, setGiaProfiloClicked] = useState(false);
-  const [pointerStartX, setPointerStartX] = useState<number | null>(null);
+  const [containerWidth, setContainerWidth] = useState(350);
+  const containerRef = React.useRef<HTMLDivElement>(null);
   const [onboardingSlideIndex, setOnboardingSlideIndex] = useState(0);
 
   // Auto-scroll logic for onboarding intro slider
@@ -65,26 +67,21 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
     }
   }, [step, onboardingSlides?.length]);
 
-  const handlePointerDown = (e: React.PointerEvent) => {
-    setPointerStartX(e.clientX);
-  };
-
-  const handlePointerUp = (e: React.PointerEvent) => {
-    if (pointerStartX === null) return;
-    const pointerEndX = e.clientX;
-    const diff = pointerStartX - pointerEndX;
-
-    if (Math.abs(diff) > 40) { // Min swipe distance
-      if (diff > 0) {
-        // Swipe left -> Next slide
-        setOnboardingSlideIndex((prev) => (prev + 1) % onboardingSlides.length);
-      } else {
-        // Swipe right -> Prev slide
-        setOnboardingSlideIndex((prev) => (prev - 1 + onboardingSlides.length) % onboardingSlides.length);
-      }
+  useEffect(() => {
+    if (containerRef.current) {
+      setContainerWidth(containerRef.current.offsetWidth);
     }
-    setPointerStartX(null);
-  };
+  }, [step]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleCtaClick = () => {
     if (ctaClicked) return;
@@ -540,15 +537,50 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             
             {/* Banner Container */}
             <div 
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              className="relative w-full h-56 sm:h-64 rounded-[2rem] overflow-hidden border border-slate-100 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] bg-slate-50 flex-shrink-0 cursor-grab active:cursor-grabbing select-none touch-pan-y"
+              ref={containerRef}
+              className="relative w-full h-56 sm:h-64 rounded-[2rem] overflow-hidden border border-slate-100 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] bg-slate-50 flex-shrink-0 select-none touch-pan-y"
             >
-              <img 
-                src={onboardingSlides[onboardingSlideIndex]?.url || "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80"} 
-                alt="Banner slide" 
-                className="w-full h-full object-cover transition-all duration-700 ease-in-out scale-100 pointer-events-none select-none" 
-              />
+              <motion.div
+                className="flex h-full cursor-grab active:cursor-grabbing"
+                style={{ 
+                  width: `${onboardingSlides.length * 100}%`,
+                }}
+                drag="x"
+                dragConstraints={{
+                  left: -containerWidth * (onboardingSlides.length - 1),
+                  right: 0
+                }}
+                dragElastic={0.2}
+                animate={{ x: -onboardingSlideIndex * containerWidth }}
+                transition={{ type: "spring", stiffness: 280, damping: 28 }}
+                onDragEnd={(e, info) => {
+                  const swipeThreshold = containerWidth * 0.15; // 15% of container width
+                  const offset = info.offset.x;
+                  const velocity = info.velocity.x;
+
+                  if (offset < -swipeThreshold || velocity < -300) {
+                    // Next slide
+                    setOnboardingSlideIndex((prev) => Math.min(prev + 1, onboardingSlides.length - 1));
+                  } else if (offset > swipeThreshold || velocity > 300) {
+                    // Prev slide
+                    setOnboardingSlideIndex((prev) => Math.max(prev - 1, 0));
+                  }
+                }}
+              >
+                {onboardingSlides.map((slide) => (
+                  <div 
+                    key={slide.id} 
+                    style={{ width: `${100 / onboardingSlides.length}%` }} 
+                    className="h-full relative overflow-hidden flex-shrink-0"
+                  >
+                    <img 
+                      src={slide.url} 
+                      alt={slide.title} 
+                      className="w-full h-full object-cover pointer-events-none select-none" 
+                    />
+                  </div>
+                ))}
+              </motion.div>
             </div>
 
             {/* Title & Subtitle under the banner */}
