@@ -227,7 +227,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="flex flex-col items-center justify-center text-center">
             
             {/* Logo Container with soft shadow and large image scaling */}
-            <div className="w-32 h-32 bg-white rounded-full border border-gray-100 flex items-center justify-center p-2.5 shadow-lg shadow-gray-200/50">
+            <div className="w-32 h-32 bg-white rounded-full border border-gray-100 flex items-center justify-center p-2.5 shadow-lg shadow-gray-100/50">
               {logoUrl ? (
                 <img 
                   src={logoUrl} 
@@ -238,7 +238,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               ) : (
                 <svg 
                   viewBox="0 0 100 100" 
-                  className="w-26 h-26 text-[#004D40]" 
+                  className="w-26 h-26 text-black" 
                   fill="currentColor"
                 >
                   <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" strokeWidth="4" />
@@ -257,7 +257,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
 
             {/* Brand Name */}
-            <h1 className="text-[#004D40] text-5xl font-black tracking-widest uppercase mt-8 mb-4">
+            <h1 className="text-black text-5xl font-black tracking-widest uppercase mt-8 mb-4">
               WEALINK
             </h1>
             
@@ -278,11 +278,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="w-full pb-4">
             <button
               onClick={handleInizioClick}
-              className="group relative flex items-center justify-between w-full bg-[#004D40] text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-[0_20px_40px_rgba(0,77,64,0.3)] active:scale-[0.98] cursor-pointer"
+              className="group relative flex items-center justify-between w-full bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
             >
               {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
               <span className={`text-lg tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
-                inizioClicked ? "pr-16 pl-6 text-[#D4E157]" : "pl-16 pr-6 text-white"
+                inizioClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
               }`}>
                 Inizia
               </span>
@@ -290,16 +290,16 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               {/* Genzam Circular Icon Container (Slides from left to right on click) */}
               <div 
                 className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
-                  inizioClicked ? "left-[calc(100%-3.5rem)] bg-[#D4E157]" : "left-2 bg-white"
+                  inizioClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
                 }`}
               >
                 {/* Arrow Icon 1 (visible initially, slides right on hover or click) */}
-                <ArrowRight className={`w-5 h-5 text-[#004D40] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                   inizioClicked ? "translate-x-10" : "group-hover:translate-x-10"
                 }`} />
                 
                 {/* Arrow Icon 2 (hidden to left initially, slides to center on hover or click) */}
-                <ArrowRight className={`absolute w-5 h-5 text-[#004D40] -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                   inizioClicked ? "translate-x-0" : "group-hover:translate-x-0"
                 }`} />
               </div>
@@ -308,14 +308,14 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
         </div>
 
         {/* ==================== SCHERMATA 2: ONBOARDING STEP 1 - REGISTRATION & GOOGLE LOGIN ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-6 px-6 bg-white relative overflow-y-auto">
+        <div className="w-1/6 h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
           
           {/* Header Row: Back button & Centered Wealink Logo */}
-          <div className="w-full flex flex-col items-center pt-2 relative">
+          <div className="w-full flex flex-col items-center pt-4 relative">
             <div className="absolute left-0 top-3">
               <button 
                 onClick={() => setStep("welcome")}
-                className="p-2 rounded-full hover:bg-gray-100 active:scale-95 transition-all text-[#004D40] focus:outline-none"
+                className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 focus:outline-none"
                 aria-label="Torna indietro"
               >
                 <ArrowLeft className="w-6 h-6" />
@@ -323,7 +323,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
             
             {/* Logo at the very top (Page 1 matching scale) */}
-            <div className="w-16 h-16 bg-white rounded-full border border-gray-100 flex items-center justify-center p-1.5 shadow-md">
+            <div className="w-16 h-16 bg-white rounded-full border border-slate-100 flex items-center justify-center p-1.5 shadow-sm">
               {logoUrl ? (
                 <img 
                   src={logoUrl} 
@@ -332,85 +332,98 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                   referrerPolicy="no-referrer"
                 />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-[#004D40] flex items-center justify-center text-white text-[10px] font-black">WL</div>
+                <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center text-white text-[10px] font-black">WL</div>
               )}
             </div>
           </div>
 
-          {/* Central registration block */}
-          <div className="w-full max-w-sm mx-auto px-4 mt-6">
+          {/* Central registration block with massive breathing room (respiro) */}
+          <div className="w-full max-w-sm mx-auto px-2 mt-12 md:mt-16 flex-1 flex flex-col justify-center">
             
-            {/* Google Authentication Button */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+                Crea il tuo account
+              </h2>
+              <p className="text-xs text-slate-500 mt-2 font-medium">
+                Inizia ad inviare denaro in modo semplice e sicuro
+              </p>
+            </div>
+
+            {/* Google Authentication Button - Identical to Google original */}
             <button
               type="button"
               onClick={() => setShowGoogleModal(true)}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 font-bold text-sm py-3 px-6 rounded-xl border border-gray-300 shadow-sm flex items-center justify-center gap-3 transition-all active:scale-[0.98] focus:outline-none cursor-pointer"
+              className="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm h-12 px-4 rounded-full border border-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-start gap-4 transition-all active:scale-[0.98] focus:outline-none cursor-pointer relative"
             >
               {/* Google official flat logo SVG */}
-              <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.53-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.57-5.17 3.57-8.82z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.08 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.15C3.26 21.17 7.31 24 12 24z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.27 14.24a7.15 7.15 0 0 1 0-4.48V6.61H1.29a11.94 11.94 0 0 0 0 10.78l3.98-3.15z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.43-3.43C17.96 1.19 15.24 0 12 0 7.31 0 3.26 2.83 1.29 6.61l3.98 3.15c.95-2.85 3.6-4.96 6.73-4.96z"
-                />
-              </svg>
-              <span>Continua con Google</span>
+              <div className="flex-shrink-0 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-slate-100">
+                <svg className="w-5 h-5" viewBox="0 0 24 24">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.53-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.57-5.17 3.57-8.82z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.08 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.15C3.26 21.17 7.31 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.27 14.24a7.15 7.15 0 0 1 0-4.48V6.61H1.29a11.94 11.94 0 0 0 0 10.78l3.98-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.43-3.43C17.96 1.19 15.24 0 12 0 7.31 0 3.26 2.83 1.29 6.61l3.98 3.15c.95-2.85 3.6-4.96 6.73-4.96z"
+                  />
+                </svg>
+              </div>
+              <span className="flex-1 text-center font-bold text-slate-700 pr-8">Continua con Google</span>
             </button>
 
             {/* Separator block */}
-            <div className="text-[10px] font-black text-gray-400 tracking-widest text-center my-6 uppercase">
-              O REGISTRATI CON I TUOI DATI
+            <div className="relative flex py-6 items-center">
+              <div className="flex-grow border-t border-slate-100"></div>
+              <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 tracking-widest uppercase">Oppure</span>
+              <div className="flex-grow border-t border-slate-100"></div>
             </div>
 
             {/* Manual Fields Layout */}
-            <form onSubmit={handleManualRegister} className="w-full space-y-4">
+            <form onSubmit={handleManualRegister} className="w-full space-y-5">
               
               {/* Nome */}
               <div className="space-y-1.5">
-                <label className="text-xs font-black text-slate-700 block uppercase tracking-wider">Nome</label>
+                <label className="text-[11px] font-bold text-slate-500 block uppercase tracking-wider pl-1">Nome</label>
                 <input
                   type="text"
                   placeholder="Es. Mohammad"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-base font-bold placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] focus:border-[#004D40] focus:outline-none transition-all text-slate-800"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                   required
                 />
               </div>
 
               {/* Cognome */}
               <div className="space-y-1.5">
-                <label className="text-xs font-black text-slate-700 block uppercase tracking-wider">Cognome</label>
+                <label className="text-[11px] font-bold text-slate-500 block uppercase tracking-wider pl-1">Cognome</label>
                 <input
                   type="text"
                   placeholder="Es. Hossein"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-base font-bold placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] focus:border-[#004D40] focus:outline-none transition-all text-slate-800"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                   required
                 />
               </div>
 
               {/* Numero di telefono */}
               <div className="space-y-1.5">
-                <label className="text-xs font-black text-slate-700 block uppercase tracking-wider">Numero di telefono</label>
-                <div className="flex gap-2">
-                  <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-3 py-3 select-none">
-                    <span className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center border border-gray-200 shadow-sm text-sm">
+                <label className="text-[11px] font-bold text-slate-500 block uppercase tracking-wider pl-1">Numero di telefono</label>
+                <div className="flex gap-3">
+                  <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-2xl px-4 py-3.5 select-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                    <span className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center border border-slate-100 shadow-sm text-sm">
                       🇮🇹
                     </span>
-                    <span className="text-base font-black text-slate-800">+39</span>
+                    <span className="text-sm font-bold text-slate-700">+39</span>
                   </div>
                   <input
                     type="tel"
@@ -420,7 +433,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                       const cleanVal = e.target.value.replace(/[^0-9 ]/g, '');
                       setPhoneOnly(cleanVal);
                     }}
-                    className="flex-1 rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-base font-bold placeholder-gray-400 focus:ring-2 focus:ring-[#004D40] focus:border-[#004D40] focus:outline-none transition-all text-slate-800"
+                    className="flex-1 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                     required
                   />
                 </div>
@@ -430,10 +443,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               <button
                 type="submit"
                 disabled={!firstName.trim() || !lastName.trim() || !phoneOnly.trim()}
-                className={`w-full font-black text-lg rounded-full py-4 text-center tracking-wide mt-6 transition-all duration-300 cursor-pointer ${
+                className={`w-full font-bold text-base rounded-full py-4 text-center tracking-wide mt-8 transition-all duration-300 cursor-pointer ${
                   (!firstName.trim() || !lastName.trim() || !phoneOnly.trim())
-                    ? "bg-gray-300 text-gray-500 cursor-not-allowed shadow-none"
-                    : "bg-[#004D40] text-white shadow-md shadow-[#004D40]/20 hover:bg-[#00332a] active:scale-[0.98]"
+                    ? "bg-slate-100 text-slate-400 cursor-not-allowed shadow-none"
+                    : "bg-black text-white shadow-md shadow-black/10 hover:bg-slate-900 active:scale-[0.98]"
                 }`}
               >
                 Procedi
@@ -443,136 +456,168 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           </div>
 
           {/* Safe padding footer spacer */}
-          <div className="h-6" />
+          <div className="h-8" />
 
         </div>
 
         {/* ==================== SCHERMATA 3: ONBOARDING STEP 2 - NATIONALITY SELECTION ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-8 px-6 bg-white relative overflow-y-auto">
+        <div className="w-1/6 h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
           
           {/* Top progress bar (Step 2/3) */}
           <div className="w-full">
             {/* Back button */}
-            <button 
-              onClick={() => setStep("register_step1")}
-              className="p-2 -ml-2 rounded-full hover:bg-gray-100 active:scale-95 transition-all text-[#004D40] focus:outline-none"
-              aria-label="Torna indietro"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
+            <div className="absolute left-4 top-6">
+              <button 
+                onClick={() => setStep("register_step1")}
+                className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 focus:outline-none"
+                aria-label="Torna indietro"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            </div>
 
             {/* Progress indicator */}
-            <div className="mt-4 px-4">
-              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+            <div className="mt-10 px-4">
+              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
                 <span>Passo 2 di 3</span>
-                <span className="text-[#004D40]">Nazionalità</span>
+                <span className="text-slate-900 font-semibold">Nazionalità</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div className="w-2/3 h-full bg-[#004D40] rounded-full transition-all duration-500" />
+              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="w-2/3 h-full bg-black rounded-full transition-all duration-500" />
               </div>
             </div>
           </div>
 
-          {/* Central selection block */}
-          <div className="w-full max-w-sm mx-auto px-4 flex-1 flex flex-col justify-center my-6">
-            <h2 className="text-2xl font-black text-slate-800 text-center tracking-tight leading-tight mb-2">
-              Seleziona la tua nazionalità
-            </h2>
-            <p className="text-xs text-slate-400 text-center font-bold uppercase tracking-wider mb-8">
-              Personalizzeremo la tua esperienza di invio denaro
-            </p>
+          {/* Central selection block with breathing space (respiro) */}
+          <div className="w-full max-w-sm mx-auto px-2 flex-1 flex flex-col justify-center mt-12 md:mt-16">
+            
+            <div className="text-center mb-10">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+                Seleziona la tua nazionalità
+              </h2>
+              <p className="text-xs text-slate-500 mt-2 font-medium">
+                Personalizzeremo la tua esperienza di invio denaro
+              </p>
+            </div>
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-5">
               {/* Option 1: Bangladesh */}
               <button
-                onClick={() => {
-                  setNationality("Bangladesh");
-                  setStep("register_step3");
-                }}
-                className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-[#004D40] hover:bg-slate-50/50 transition-all shadow-sm hover:shadow active:scale-[0.98] cursor-pointer text-left"
+                onClick={() => setNationality("Bangladesh")}
+                className={`flex items-center gap-4 p-5 bg-white border rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:shadow active:scale-[0.98] cursor-pointer text-left w-full relative ${
+                  nationality === "Bangladesh" 
+                    ? "border-black ring-1 ring-black bg-slate-50/10" 
+                    : "border-slate-200/80 hover:border-slate-300"
+                }`}
               >
-                <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 bg-slate-100 flex-shrink-0 shadow-inner">
+                <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center border border-slate-100 bg-slate-50 flex-shrink-0 shadow-sm">
                   <span className="text-4xl">🇧🇩</span>
                 </div>
-                <div>
-                  <h3 className="text-lg font-extrabold text-slate-800 leading-tight">Bangladesh</h3>
-                  <p className="text-xs text-slate-400 font-bold uppercase mt-0.5">Seleziona nazionalità</p>
+                <div className="flex-1">
+                  <h3 className="text-base font-bold text-slate-900 leading-tight">Bangladesh</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Seleziona nazionalità</p>
                 </div>
+                {nationality === "Bangladesh" && (
+                  <CheckCircle2 className="w-5 h-5 text-black flex-shrink-0 ml-auto" strokeWidth={2.5} />
+                )}
               </button>
 
               {/* Option 2: Pakistan */}
               <button
-                onClick={() => {
-                  setNationality("Pakistan");
-                  setStep("register_step3");
-                }}
-                className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-[#004D40] hover:bg-slate-50/50 transition-all shadow-sm hover:shadow active:scale-[0.98] cursor-pointer text-left"
+                onClick={() => setNationality("Pakistan")}
+                className={`flex items-center gap-4 p-5 bg-white border rounded-2xl transition-all shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:shadow active:scale-[0.98] cursor-pointer text-left w-full relative ${
+                  nationality === "Pakistan" 
+                    ? "border-black ring-1 ring-black bg-slate-50/10" 
+                    : "border-slate-200/80 hover:border-slate-300"
+                }`}
               >
-                <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center border border-gray-100 bg-slate-100 flex-shrink-0 shadow-inner">
+                <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center border border-slate-100 bg-slate-50 flex-shrink-0 shadow-sm">
                   <span className="text-4xl">🇵🇰</span>
                 </div>
-                <div>
-                  <h3 className="text-lg font-extrabold text-slate-800 leading-tight">Pakistan</h3>
-                  <p className="text-xs text-slate-400 font-bold uppercase mt-0.5">Seleziona nazionalità</p>
+                <div className="flex-1">
+                  <h3 className="text-base font-bold text-slate-900 leading-tight">Pakistan</h3>
+                  <p className="text-xs text-slate-500 mt-0.5">Seleziona nazionalità</p>
                 </div>
+                {nationality === "Pakistan" && (
+                  <CheckCircle2 className="w-5 h-5 text-black flex-shrink-0 ml-auto" strokeWidth={2.5} />
+                )}
               </button>
             </div>
+
+            {/* Primary Action Button (Procedi) - Google style */}
+            <button
+              onClick={() => setStep("register_step3")}
+              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-base rounded-full py-4 text-center tracking-wide mt-12 shadow-md shadow-black/10 active:scale-[0.98] transition-all cursor-pointer"
+            >
+              Procedi
+            </button>
           </div>
 
-          <div className="h-6" />
+          <div className="h-8" />
 
         </div>
 
         {/* ==================== SCHERMATA 4: ONBOARDING STEP 3 - PROFILE CONFIGURATION ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-8 px-6 bg-white relative overflow-y-auto">
+        <div className="w-1/6 h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
           
           {/* Top progress bar (Step 3/3) */}
           <div className="w-full">
             {/* Back button */}
-            <button 
-              onClick={() => setStep("register_step2")}
-              className="p-2 -ml-2 rounded-full hover:bg-gray-100 active:scale-95 transition-all text-[#004D40] focus:outline-none"
-              aria-label="Torna indietro"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
+            <div className="absolute left-4 top-6">
+              <button 
+                onClick={() => setStep("register_step2")}
+                className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 focus:outline-none"
+                aria-label="Torna indietro"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            </div>
 
             {/* Progress indicator */}
-            <div className="mt-4 px-4">
-              <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+            <div className="mt-10 px-4">
+              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
                 <span>Passo 3 di 3</span>
-                <span className="text-emerald-600 font-extrabold">Completato</span>
+                <span className="text-slate-900 font-bold">Completato</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                <div className="w-full h-full bg-emerald-500 rounded-full transition-all duration-500" />
+              <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div className="w-full h-full bg-black rounded-full transition-all duration-500" />
               </div>
             </div>
           </div>
 
           {/* Central config block */}
-          <div className="w-full max-w-sm mx-auto px-4 flex-1 flex flex-col justify-center items-center my-6">
+          <div className="w-full max-w-sm mx-auto px-2 flex-1 flex flex-col justify-center items-center mt-12 md:mt-16">
             
-            {/* Avatar Upload Container */}
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+                Aggiungi una foto profilo
+              </h2>
+              <p className="text-xs text-slate-500 mt-2 font-medium">
+                Un'immagine ti aiuta a personalizzare il tuo portale clienti
+              </p>
+            </div>
+
+            {/* Avatar Upload Container with minimal dashed light-grey line */}
             <div 
-              className="relative group cursor-pointer mt-2 mb-6" 
+              className="relative group cursor-pointer mb-8" 
               onClick={() => document.getElementById("avatar-file-input")?.click()}
             >
-              <div className="w-32 h-32 rounded-full border-2 border-dashed border-[#004D40]/30 hover:border-[#004D40] bg-slate-50 flex flex-col items-center justify-center overflow-hidden transition-all shadow-md">
+              <div className="w-32 h-32 rounded-full border border-dashed border-slate-300 hover:border-slate-400 bg-white flex flex-col items-center justify-center overflow-hidden transition-all shadow-none">
                 {avatarUrl ? (
                   <img src={avatarUrl} alt="Avatar Preview" className="w-full h-full object-cover" />
                 ) : (
                   <div className="flex flex-col items-center justify-center text-slate-400 p-4 text-center">
-                    <div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500 mb-1.5 shadow-sm">
-                      <Users className="w-5 h-5 text-[#004D40]" />
+                    <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 mb-2 border border-slate-100">
+                      <Users className="w-5 h-5 text-slate-600" />
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">Carica Foto</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Carica Foto</span>
                     <span className="text-[8px] text-slate-400 mt-0.5">O lascia vuoto</span>
                   </div>
                 )}
               </div>
               
-              {/* Edit Camera Badge */}
-              <div className="absolute bottom-1 right-1 bg-[#004D40] text-white p-2 rounded-full shadow-md border-2 border-white">
+              {/* Edit Camera Badge - Black solid minimal */}
+              <div className="absolute bottom-1 right-1 bg-slate-900 text-white p-2.5 rounded-full shadow-sm border border-white hover:scale-105 transition-transform">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3.5 h-3.5">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
@@ -598,28 +643,28 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             />
 
             {/* Automatic pre-filled Name display */}
-            <h2 className="text-xl font-black text-[#004D40] text-center leading-tight mt-2">
+            <h2 className="text-xl font-bold text-slate-900 text-center leading-tight">
               {firstName} {lastName}
             </h2>
-            <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mt-1 flex items-center gap-1.5">
+            <div className="text-[11px] text-slate-500 font-medium tracking-wide mt-2.5 flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-100 rounded-full">
               <span>{nationality === "Bangladesh" ? "🇧🇩" : "🇵🇰"}</span>
-              <span>{nationality}</span>
-            </p>
+              <span className="capitalize">{nationality}</span>
+            </div>
 
-            <p className="text-xs text-slate-500 font-semibold text-center mt-4 max-w-xs leading-normal">
-              Il tuo account è pronto. Ora puoi completare l'onboarding e accedere a tutti i servizi di ricarica e spedizione.
+            <p className="text-xs text-slate-500 font-medium text-center mt-6 max-w-xs leading-relaxed">
+              Il tuo account è pronto. Ora puoi completare il profilo ed accedere a tutti i servizi di ricarica, spedizione e tariffe speciali.
             </p>
 
             {/* Complete onboarding CTA */}
             <button
               onClick={handleFinishOnboarding}
-              className="w-full bg-[#004D40] hover:bg-[#00332a] text-white font-black text-lg rounded-full py-4 text-center tracking-wide mt-8 shadow-md shadow-[#004D40]/20 active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-base rounded-full py-4 text-center tracking-wide mt-10 shadow-md shadow-black/10 active:scale-[0.98] transition-all cursor-pointer"
             >
               Completa Profilo & Entra
             </button>
           </div>
 
-          <div className="h-6" />
+          <div className="h-8" />
 
         </div>
 
@@ -638,11 +683,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             <div className="px-4 pt-4 pb-2">
               <div className="grid grid-cols-3 gap-2">
                 {/* Tag 1 (Security) */}
-                <div className="bg-[#E6F4F1]/40 border border-teal-500/10 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
-                  <div className="w-7 h-7 bg-teal-50 rounded-full flex items-center justify-center text-[#004D40] mb-1.5">
+                <div className="bg-slate-50 border border-slate-200/60 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
+                  <div className="w-7 h-7 bg-slate-100 rounded-full flex items-center justify-center text-black mb-1.5">
                     <ShieldCheck className="w-4 h-4" />
                   </div>
-                  <span className="text-[9px] font-black text-[#004D40] leading-tight">Guaranteed High Security</span>
+                  <span className="text-[9px] font-black text-slate-900 leading-tight">Guaranteed High Security</span>
                 </div>
 
                 {/* Tag 2 (Social Proof) */}
@@ -690,8 +735,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               
               <div className="space-y-4">
                 {/* 1. Money Transfer */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0 text-emerald-600">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 text-black">
                     <Wallet className="w-6 h-6" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -701,7 +746,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 </div>
 
                 {/* 2. Telecom & SIM Activation */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
                   <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0 text-blue-600">
                     <Smartphone className="w-6 h-6" />
                   </div>
@@ -712,7 +757,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 </div>
 
                 {/* 3. Delivery Service */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
                   <div className="w-12 h-12 rounded-xl bg-indigo-50 flex items-center justify-center flex-shrink-0 text-indigo-600">
                     <Truck className="w-6 h-6" />
                   </div>
@@ -723,7 +768,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 </div>
 
                 {/* 4. Curriculum / CV Maker */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
                   <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0 text-amber-600">
                     <FileText className="w-6 h-6" />
                   </div>
@@ -734,7 +779,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 </div>
 
                 {/* 5. Recharge */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
                   <div className="w-12 h-12 rounded-xl bg-yellow-50 flex items-center justify-center flex-shrink-0 text-yellow-600">
                     <Zap className="w-6 h-6" />
                   </div>
@@ -745,8 +790,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 </div>
 
                 {/* 6. Ticketing */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
-                  <div className="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center flex-shrink-0 text-teal-600">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
+                  <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-800">
                     <Ticket className="w-6 h-6" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -756,7 +801,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 </div>
 
                 {/* 7. Wealink Market & Online Orders */}
-                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-teal-500/30 transition-all shadow-sm hover:shadow-md">
+                <div className="flex items-center gap-4 p-5 bg-white border border-gray-200 rounded-2xl hover:border-black/20 transition-all shadow-sm hover:shadow-md">
                   <div className="w-12 h-12 rounded-xl bg-rose-50 flex items-center justify-center flex-shrink-0 text-rose-600">
                     <ShoppingBag className="w-6 h-6" />
                   </div>
@@ -773,11 +818,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* PREMIUM DASHBOARD CTA WITH ANIMATING CIRCLE LEFT-TO-RIGHT ON CLICK */}
             <button
               onClick={handleCtaClick}
-              className="group relative flex items-center justify-between w-[calc(100%-2rem)] mx-4 bg-[#004D40] text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-[0_20px_40px_rgba(0,77,64,0.3)] active:scale-[0.98] mt-10 mb-4 cursor-pointer"
+              className="group relative flex items-center justify-between w-[calc(100%-2rem)] mx-4 bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg active:scale-[0.98] mt-10 mb-4 cursor-pointer"
             >
               {/* Text - positioned nicely so it does not overlap with the circle on the left or the right */}
               <span className={`text-lg tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
-                ctaClicked ? "pr-16 pl-6 text-[#D4E157]" : "pl-16 pr-6 text-white"
+                ctaClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
               }`}>
                 Accedi alla Dashboard
               </span>
@@ -785,16 +830,16 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               {/* Genzam Circular Icon Container (Slides from left to right on click) */}
               <div 
                 className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
-                  ctaClicked ? "left-[calc(100%-3.5rem)] bg-[#D4E157]" : "left-2 bg-white"
+                  ctaClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
                 }`}
               >
                 {/* Arrow Icon 1 (visible initially, slides right on hover or click) */}
-                <ArrowRight className={`w-5 h-5 text-[#004D40] transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                   ctaClicked ? "translate-x-10" : "group-hover:translate-x-10"
                 }`} />
                 
                 {/* Arrow Icon 2 (hidden to left initially, slides to center on hover or click) */}
-                <ArrowRight className={`absolute w-5 h-5 text-[#004D40] -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                   ctaClicked ? "translate-x-0" : "group-hover:translate-x-0"
                 }`} />
               </div>
@@ -813,7 +858,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 }}
                 className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-black py-2.5 px-5 rounded-full hover:bg-slate-100 hover:text-black transition-all active:scale-95 shadow-sm cursor-pointer"
               >
-                <Lock className="w-3.5 h-3.5 text-[#004D40]" />
+                <Lock className="w-3.5 h-3.5 text-black" />
                 Area Amministratore (Admin)
               </button>
             </div>
@@ -824,15 +869,15 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="absolute bottom-0 left-0 right-0 z-20 bg-white border-t border-slate-100 h-16 flex justify-around items-center px-2 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]">
             
             {/* Home Tab */}
-            <button className="flex flex-col items-center gap-0.5 text-[#004D40] focus:outline-none">
-              <Home className="w-5 h-5 text-[#004D40]" strokeWidth={2.5} />
+            <button className="flex flex-col items-center gap-0.5 text-black focus:outline-none">
+              <Home className="w-5 h-5 text-black" strokeWidth={2.5} />
               <span className="text-[9px] font-extrabold">Home</span>
             </button>
 
             {/* Invia Denaro */}
             <button 
               onClick={() => setStep("dashboard")} 
-              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#004D40] transition-colors focus:outline-none"
+              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-black transition-colors focus:outline-none"
             >
               <Wallet className="w-5 h-5" strokeWidth={1.8} />
               <span className="text-[9px] font-bold">Invia Denaro</span>
@@ -841,7 +886,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Shop */}
             <button 
               onClick={() => setStep("dashboard")} 
-              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#004D40] transition-colors focus:outline-none"
+              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-black transition-colors focus:outline-none"
             >
               <ShoppingBag className="w-5 h-5" strokeWidth={1.8} />
               <span className="text-[9px] font-bold">Shop</span>
@@ -850,7 +895,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Viaggi */}
             <button 
               onClick={() => setStep("dashboard")} 
-              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#004D40] transition-colors focus:outline-none"
+              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-black transition-colors focus:outline-none"
             >
               <Plane className="w-5 h-5" strokeWidth={1.8} />
               <span className="text-[9px] font-bold">Viaggi</span>
@@ -859,7 +904,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Impostazioni */}
             <button 
               onClick={() => setStep("dashboard")} 
-              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-[#004D40] transition-colors focus:outline-none"
+              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-black transition-colors focus:outline-none"
             >
               <Settings className="w-5 h-5" strokeWidth={1.8} />
               <span className="text-[9px] font-bold">Impostazioni</span>
@@ -874,18 +919,18 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               }`}
             >
               <div className="bg-white rounded-[2rem] p-8 border border-white/20 shadow-2xl shadow-black/20 text-center max-w-[85%] animate-in zoom-in duration-300">
-                <div className="w-16 h-16 bg-[#004D40]/10 rounded-full flex items-center justify-center mx-auto mb-4 text-[#004D40]">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-black">
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-8 h-8">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
                   </svg>
                 </div>
-                <h2 className="text-xl font-black text-[#004D40] uppercase tracking-wide leading-tight">
+                <h2 className="text-xl font-black text-black uppercase tracking-wide leading-tight">
                   Welcome to Wealink
                 </h2>
                 <p className="text-slate-800 text-sm font-bold mt-2 leading-relaxed">
                   Money Transfer and Travel
                 </p>
-                <div className="w-10 h-1 mt-4 bg-[#004D40] rounded-full mx-auto animate-pulse" />
+                <div className="w-10 h-1 mt-4 bg-black rounded-full mx-auto animate-pulse" />
               </div>
             </div>
           )}
@@ -912,7 +957,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#004D40] uppercase tracking-wide">Wealink Support</span>
+                <span className="text-xs font-bold text-black uppercase tracking-wide">Wealink Support</span>
                 <span className="text-[10px] text-gray-400 font-mono">Adesso</span>
               </div>
               <p className="text-sm font-semibold text-slate-800 mt-0.5 truncate">
@@ -933,8 +978,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
           </div>
 
-          {/* GREEN CURTAIN HEADER */}
-          <div className="absolute top-0 left-0 right-0 h-48 bg-[#004D40] rounded-b-[2rem] px-6 pt-6 pb-6 text-white z-30 flex flex-col justify-between shadow-lg shadow-[#004D40]/10">
+          {/* BLACK/DARK CURTAIN HEADER */}
+          <div className="absolute top-0 left-0 right-0 h-48 bg-black rounded-b-[2rem] px-6 pt-6 pb-6 text-white z-30 flex flex-col justify-between shadow-lg shadow-black/10">
             {/* Top row with Logo and Brand only (exclusively, no online badges or duplicate avatar) */}
             <div className="flex items-center justify-between mt-2">
               <div className="flex items-center gap-2.5">
@@ -953,10 +998,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Bottom row inside curtain with mini stats/text */}
             <div className="flex items-end justify-between mt-1">
               <div>
-                <h1 className="text-[10px] font-bold text-teal-200/80 uppercase tracking-widest">Portale Clienti</h1>
+                <h1 className="text-[10px] font-bold text-slate-300 uppercase tracking-widest">Portale Clienti</h1>
                 <p className="text-sm font-medium text-white/95 mt-0.5">Tassi di cambio in tempo reale</p>
               </div>
-              <span className="text-[10px] text-teal-200/60 font-mono">v1.2</span>
+              <span className="text-[10px] text-slate-400 font-mono">v1.2</span>
             </div>
           </div>
 
@@ -977,7 +1022,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
 
               {/* Card 2: Account */}
               <div className="bg-white rounded-2xl border border-gray-100 p-3.5 flex flex-col items-center text-center shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-9 h-9 bg-emerald-50 rounded-full flex items-center justify-center text-emerald-600 mb-2">
+                <div className="w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center text-black mb-2">
                   {/* ICON PLACEHOLDER - EASILY REPLACEABLE WITH IMG/LOCAL SVG */}
                   <Landmark className="w-4 h-4" />
                 </div>
@@ -1008,7 +1053,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Invia Soldi")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <Send className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1022,7 +1067,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Ricariche")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <Smartphone className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1036,7 +1081,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Biglietteria")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <Plane className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1050,7 +1095,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Mercato")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <ShoppingBag className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1064,7 +1109,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Spedisci")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <Truck className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1078,7 +1123,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Crea CV")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <FileText className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1092,7 +1137,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                 onClick={() => handleServiceClick("Acquista SIM")}
                 className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col justify-between h-[115px] shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.98] cursor-pointer"
               >
-                <div className="w-10 h-10 bg-[#004D40]/5 text-[#004D40] p-2.5 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-slate-100 text-black p-2.5 rounded-xl flex items-center justify-center">
                   <Cpu className="w-5 h-5" strokeWidth={1.5} />
                 </div>
                 <div>
@@ -1139,7 +1184,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
 
             {googleLoading ? (
               <div className="p-10 flex flex-col items-center justify-center space-y-3">
-                <svg className="animate-spin h-8 w-8 text-[#004D40]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <svg className="animate-spin h-8 w-8 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
@@ -1184,7 +1229,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                     setShowGoogleModal(false);
                     toast.info("Inserisci i tuoi dati manualmente nel modulo di registrazione.");
                   }}
-                  className="w-full px-6 py-4 text-center text-xs font-black text-[#004D40] hover:bg-slate-50 transition-colors cursor-pointer"
+                  className="w-full px-6 py-4 text-center text-xs font-black text-black hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   Usa un altro account
                 </button>
