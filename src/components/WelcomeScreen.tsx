@@ -586,10 +586,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Title & Subtitle under the banner */}
             <div className="text-center mt-6 min-h-[90px] flex flex-col justify-start">
               <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
-                {onboardingSlides[onboardingSlideIndex]?.title}
+                {onboardingSlides[onboardingSlideIndex]?.titles?.[i18n.language as "it" | "en" | "bn" | "ur"] || onboardingSlides[onboardingSlideIndex]?.title}
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 font-medium mt-2 leading-relaxed max-w-[90%] mx-auto">
-                {onboardingSlides[onboardingSlideIndex]?.subtitle}
+                {onboardingSlides[onboardingSlideIndex]?.subtitles?.[i18n.language as "it" | "en" | "bn" | "ur"] || onboardingSlides[onboardingSlideIndex]?.subtitle}
               </p>
             </div>
 

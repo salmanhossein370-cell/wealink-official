@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Lock, Plus, Trash2, ArrowLeft, Image as ImageIcon, Layers, HelpCircle, Upload, Check, Loader2, Users, MessageSquare, UserMinus } from "lucide-react";
+import { Lock, Plus, Trash2, ArrowLeft, Image as ImageIcon, Layers, HelpCircle, Upload, Check, Loader2, Users, MessageSquare, UserMinus, ArrowUp, ArrowDown, Edit2, Globe } from "lucide-react";
 import { APP_VERSION } from "@/version";
 
 // Client-side image compression utility
@@ -60,6 +60,44 @@ const compressImage = (file: File, maxWidth = 1200, maxHeight = 1200, quality = 
   });
 };
 
+// Client-side lightweight translation utility using Google Translate undoc endpoint + MyMemory fallback
+const translateText = async (text: string, targetLang: string, sourceLang = "auto"): Promise<string> => {
+  if (!text || !text.trim()) return "";
+  const trimmed = text.trim();
+  
+  // Clean translation request using Google Translate (extremely fast & free)
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(trimmed)}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data[0] && data[0][0] && data[0][0][0]) {
+        return data[0][0][0];
+      }
+    }
+  } catch (err) {
+    console.error(`Google Translate failed for ${targetLang}, trying MyMemory...`, err);
+  }
+
+  // Backup translation API: MyMemory (free, no auth)
+  try {
+    const pair = sourceLang === "auto" ? `it|${targetLang}` : `${sourceLang}|${targetLang}`;
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(trimmed)}&langpair=${pair}`;
+    const response = await fetch(url);
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.responseData && data.responseData.translatedText) {
+        return data.responseData.translatedText;
+      }
+    }
+  } catch (err) {
+    console.error(`MyMemory Translate failed for ${targetLang}:`, err);
+  }
+
+  // Final fallback (just return the trimmed source text)
+  return trimmed;
+};
+
 export default function AdminPanel() {
   const { 
     tickerMoney, 
@@ -79,14 +117,45 @@ export default function AdminPanel() {
     bkashMoneyRate,
     setBkashMoneyRate,
     pinRate,
-    setPinRate
+    setPinRate,
+    onboardingSlides,
+    setOnboardingSlides
   } = useAdmin();
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem("wealink_admin_authenticated") === "true";
   });
   const [passError, setPassError] = useState("");
-  const [activeTab, setActiveTab] = useState<'general' | 'hero' | 'tickers' | 'clients'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'hero' | 'tickers' | 'clients' | 'onboarding'>('general');
+
+  // Onboarding settings form states
+  const [newOnboardTitleIt, setNewOnboardTitleIt] = useState("");
+  const [newOnboardTitleEn, setNewOnboardTitleEn] = useState("");
+  const [newOnboardTitleBn, setNewOnboardTitleBn] = useState("");
+  const [newOnboardTitleUr, setNewOnboardTitleUr] = useState("");
+
+  const [newOnboardSubtitleIt, setNewOnboardSubtitleIt] = useState("");
+  const [newOnboardSubtitleEn, setNewOnboardSubtitleEn] = useState("");
+  const [newOnboardSubtitleBn, setNewOnboardSubtitleBn] = useState("");
+  const [newOnboardSubtitleUr, setNewOnboardSubtitleUr] = useState("");
+
+  const [newOnboardImage, setNewOnboardImage] = useState("");
+  const [newOnboardFileLoading, setNewOnboardFileLoading] = useState(false);
+  const [newOnboardValidationError, setNewOnboardValidationError] = useState("");
+  const [isTranslatingNew, setIsTranslatingNew] = useState(false);
+  const [isTranslatingEdit, setIsTranslatingEdit] = useState(false);
+
+  // Edit slide state
+  const [editingSlideId, setEditingSlideId] = useState<string | null>(null);
+  const [editingTitleIt, setEditingTitleIt] = useState("");
+  const [editingTitleEn, setEditingTitleEn] = useState("");
+  const [editingTitleBn, setEditingTitleBn] = useState("");
+  const [editingTitleUr, setEditingTitleUr] = useState("");
+
+  const [editingSubtitleIt, setEditingSubtitleIt] = useState("");
+  const [editingSubtitleEn, setEditingSubtitleEn] = useState("");
+  const [editingSubtitleBn, setEditingSubtitleBn] = useState("");
+  const [editingSubtitleUr, setEditingSubtitleUr] = useState("");
 
   // Exchange rate input states
   const [inputBankRate, setInputBankRate] = useState(bankRate || 125.50);
@@ -596,6 +665,350 @@ export default function AdminPanel() {
     toast.success("Slide rimossa correttamente.");
   };
 
+  // Onboarding Slides Management Helpers
+  const handleNewOnboardFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setNewOnboardFileLoading(true);
+    try {
+      console.log("[Self-Healing] Compressing onboarding slide image...");
+      const { blob, base64 } = await compressImage(file, 1200, 800, 0.7);
+      setNewOnboardImage(base64);
+      toast.success("Immagine slide caricata ed ottimizzata con successo!");
+    } catch (err) {
+      console.error(err);
+      toast.error("Errore nel caricamento del file.");
+    } finally {
+      setNewOnboardFileLoading(false);
+    }
+  };
+
+  const handleAutoTranslateNew = async () => {
+    // Find whichever field has text to translate from
+    const sourceTitle = newOnboardTitleIt.trim() || newOnboardTitleEn.trim();
+    const sourceSubtitle = newOnboardSubtitleIt.trim() || newOnboardSubtitleEn.trim();
+
+    if (!sourceTitle && !sourceSubtitle) {
+      toast.error("Inserisci prima il Titolo o la Descrizione in Italiano o Inglese!");
+      return;
+    }
+
+    setIsTranslatingNew(true);
+    const translationToast = toast.loading("Traduzione automatica in corso...");
+
+    try {
+      // Determine source language
+      const sourceLang = newOnboardTitleIt.trim() ? "it" : "en";
+
+      if (sourceTitle) {
+        const [itT, enT, bnT, urT] = await Promise.all([
+          sourceLang === "it" ? sourceTitle : translateText(sourceTitle, "it", sourceLang),
+          sourceLang === "en" ? sourceTitle : translateText(sourceTitle, "en", sourceLang),
+          translateText(sourceTitle, "bn", sourceLang),
+          translateText(sourceTitle, "ur", sourceLang)
+        ]);
+        if (itT) setNewOnboardTitleIt(itT);
+        if (enT) setNewOnboardTitleEn(enT);
+        if (bnT) setNewOnboardTitleBn(bnT);
+        if (urT) setNewOnboardTitleUr(urT);
+      }
+
+      if (sourceSubtitle) {
+        const [itS, enS, bnS, urS] = await Promise.all([
+          sourceLang === "it" ? sourceSubtitle : translateText(sourceSubtitle, "it", sourceLang),
+          sourceLang === "en" ? sourceSubtitle : translateText(sourceSubtitle, "en", sourceLang),
+          translateText(sourceSubtitle, "bn", sourceLang),
+          translateText(sourceSubtitle, "ur", sourceLang)
+        ]);
+        if (itS) setNewOnboardSubtitleIt(itS);
+        if (enS) setNewOnboardSubtitleEn(enS);
+        if (bnS) setNewOnboardSubtitleBn(bnS);
+        if (urS) setNewOnboardSubtitleUr(urS);
+      }
+
+      toast.success("Testi tradotti con successo!", { id: translationToast });
+    } catch (err) {
+      console.error(err);
+      toast.error("Errore durante la traduzione automatica.", { id: translationToast });
+    } finally {
+      setIsTranslatingNew(false);
+    }
+  };
+
+  const handleAutoTranslateEdit = async () => {
+    const sourceTitle = editingTitleIt.trim() || editingTitleEn.trim();
+    const sourceSubtitle = editingSubtitleIt.trim() || editingSubtitleEn.trim();
+
+    if (!sourceTitle && !sourceSubtitle) {
+      toast.error("Inserisci prima il Titolo o la Descrizione in Italiano o Inglese!");
+      return;
+    }
+
+    setIsTranslatingEdit(true);
+    const translationToast = toast.loading("Traduzione automatica in corso...");
+
+    try {
+      const sourceLang = editingTitleIt.trim() ? "it" : "en";
+
+      if (sourceTitle) {
+        const [itT, enT, bnT, urT] = await Promise.all([
+          sourceLang === "it" ? sourceTitle : translateText(sourceTitle, "it", sourceLang),
+          sourceLang === "en" ? sourceTitle : translateText(sourceTitle, "en", sourceLang),
+          translateText(sourceTitle, "bn", sourceLang),
+          translateText(sourceTitle, "ur", sourceLang)
+        ]);
+        if (itT) setEditingTitleIt(itT);
+        if (enT) setEditingTitleEn(enT);
+        if (bnT) setEditingTitleBn(bnT);
+        if (urT) setEditingTitleUr(urT);
+      }
+
+      if (sourceSubtitle) {
+        const [itS, enS, bnS, urS] = await Promise.all([
+          sourceLang === "it" ? sourceSubtitle : translateText(sourceSubtitle, "it", sourceLang),
+          sourceLang === "en" ? sourceSubtitle : translateText(sourceSubtitle, "en", sourceLang),
+          translateText(sourceSubtitle, "bn", sourceLang),
+          translateText(sourceSubtitle, "ur", sourceLang)
+        ]);
+        if (itS) setEditingSubtitleIt(itS);
+        if (enS) setEditingSubtitleEn(enS);
+        if (bnS) setEditingSubtitleBn(bnS);
+        if (urS) setEditingSubtitleUr(urS);
+      }
+
+      toast.success("Testi tradotti con successo!", { id: translationToast });
+    } catch (err) {
+      console.error(err);
+      toast.error("Errore durante la traduzione automatica.", { id: translationToast });
+    } finally {
+      setIsTranslatingEdit(false);
+    }
+  };
+
+  const handleAddOnboardSlide = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onboardingSlides.length >= 10) {
+      toast.error("Limite massimo di 10 banner raggiunto!");
+      return;
+    }
+    if (!newOnboardImage) {
+      toast.error("Carica o inserisci un'immagine per il banner!");
+      return;
+    }
+
+    // Determine the source text
+    let tIt = newOnboardTitleIt.trim();
+    let tEn = newOnboardTitleEn.trim();
+    let tBn = newOnboardTitleBn.trim();
+    let tUr = newOnboardTitleUr.trim();
+
+    let sIt = newOnboardSubtitleIt.trim();
+    let sEn = newOnboardSubtitleEn.trim();
+    let sBn = newOnboardSubtitleBn.trim();
+    let sUr = newOnboardSubtitleUr.trim();
+
+    const sourceTitle = tIt || tEn;
+    const sourceSubtitle = sIt || sEn;
+
+    if (!sourceTitle) {
+      toast.error("Il Titolo in Italiano o Inglese è obbligatorio!");
+      return;
+    }
+
+    const sourceLang = tIt ? "it" : "en";
+
+    // Auto-translation upon submission for any blank fields
+    if (!tIt || !tEn || !tBn || !tUr || !sIt || !sEn || !sBn || !sUr) {
+      const translationToast = toast.loading("Completamento automatico delle traduzioni mancanti...");
+      try {
+        if (!tIt) tIt = await translateText(sourceTitle, "it", sourceLang) || sourceTitle;
+        if (!tEn) tEn = await translateText(sourceTitle, "en", sourceLang) || sourceTitle;
+        if (!tBn) tBn = await translateText(sourceTitle, "bn", sourceLang) || sourceTitle;
+        if (!tUr) tUr = await translateText(sourceTitle, "ur", sourceLang) || sourceTitle;
+
+        const defaultSub = sourceSubtitle || "Wealink Transfer";
+        if (!sIt) sIt = await translateText(defaultSub, "it", sourceLang) || defaultSub;
+        if (!sEn) sEn = await translateText(defaultSub, "en", sourceLang) || defaultSub;
+        if (!sBn) sBn = await translateText(defaultSub, "bn", sourceLang) || defaultSub;
+        if (!sUr) sUr = await translateText(defaultSub, "ur", sourceLang) || defaultSub;
+
+        toast.dismiss(translationToast);
+      } catch (err) {
+        console.error("Auto-translation on save failed:", err);
+        toast.error("Errore nell'auto-traduzione di salvataggio, verranno usati i testi base.", { id: translationToast });
+        tIt = tIt || sourceTitle;
+        tEn = tEn || sourceTitle;
+        tBn = tBn || sourceTitle;
+        tUr = tUr || sourceTitle;
+        sIt = sIt || sourceSubtitle || tIt;
+        sEn = sEn || sourceSubtitle || tEn;
+        sBn = sBn || sourceSubtitle || tBn;
+        sUr = sUr || sourceSubtitle || tUr;
+      }
+    }
+
+    const newSlide = {
+      id: "onboard_" + Date.now(),
+      url: newOnboardImage,
+      title: tIt,
+      subtitle: sIt,
+      titles: {
+        it: tIt,
+        en: tEn,
+        bn: tBn,
+        ur: tUr
+      },
+      subtitles: {
+        it: sIt,
+        en: sEn,
+        bn: sBn,
+        ur: sUr
+      }
+    };
+
+    setOnboardingSlides([...onboardingSlides, newSlide]);
+
+    // Reset fields
+    setNewOnboardTitleIt("");
+    setNewOnboardTitleEn("");
+    setNewOnboardTitleBn("");
+    setNewOnboardTitleUr("");
+    setNewOnboardSubtitleIt("");
+    setNewOnboardSubtitleEn("");
+    setNewOnboardSubtitleBn("");
+    setNewOnboardSubtitleUr("");
+    setNewOnboardImage("");
+    toast.success("Nuovo banner onboarding aggiunto con successo!");
+  };
+
+  const handleDeleteOnboardSlide = (id: string) => {
+    if (onboardingSlides.length <= 1) {
+      toast.error("Devi mantenere almeno un banner nell'onboarding!");
+      return;
+    }
+    setOnboardingSlides(onboardingSlides.filter(s => s.id !== id));
+    toast.success("Banner rimosso correttamente.");
+    if (editingSlideId === id) {
+      setEditingSlideId(null);
+    }
+  };
+
+  const handleStartEditOnboardSlide = (slide: any) => {
+    setEditingSlideId(slide.id);
+    setEditingTitleIt(slide.titles?.it || slide.title || "");
+    setEditingTitleEn(slide.titles?.en || slide.title || "");
+    setEditingTitleBn(slide.titles?.bn || slide.title || "");
+    setEditingTitleUr(slide.titles?.ur || slide.title || "");
+
+    setEditingSubtitleIt(slide.subtitles?.it || slide.subtitle || "");
+    setEditingSubtitleEn(slide.subtitles?.en || slide.subtitle || "");
+    setEditingSubtitleBn(slide.subtitles?.bn || slide.subtitle || "");
+    setEditingSubtitleUr(slide.subtitles?.ur || slide.subtitle || "");
+  };
+
+  const handleSaveOnboardSlide = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingSlideId) return;
+
+    let tIt = editingTitleIt.trim();
+    let tEn = editingTitleEn.trim();
+    let tBn = editingTitleBn.trim();
+    let tUr = editingTitleUr.trim();
+
+    let sIt = editingSubtitleIt.trim();
+    let sEn = editingSubtitleEn.trim();
+    let sBn = editingSubtitleBn.trim();
+    let sUr = editingSubtitleUr.trim();
+
+    const sourceTitle = tIt || tEn;
+    const sourceSubtitle = sIt || sEn;
+
+    if (!sourceTitle) {
+      toast.error("Il Titolo in Italiano o Inglese è obbligatorio!");
+      return;
+    }
+
+    const sourceLang = tIt ? "it" : "en";
+
+    // Auto-translation upon submission for any blank fields
+    if (!tIt || !tEn || !tBn || !tUr || !sIt || !sEn || !sBn || !sUr) {
+      const translationToast = toast.loading("Completamento automatico delle traduzioni mancanti...");
+      try {
+        if (!tIt) tIt = await translateText(sourceTitle, "it", sourceLang) || sourceTitle;
+        if (!tEn) tEn = await translateText(sourceTitle, "en", sourceLang) || sourceTitle;
+        if (!tBn) tBn = await translateText(sourceTitle, "bn", sourceLang) || sourceTitle;
+        if (!tUr) tUr = await translateText(sourceTitle, "ur", sourceLang) || sourceTitle;
+
+        const defaultSub = sourceSubtitle || "Wealink Transfer";
+        if (!sIt) sIt = await translateText(defaultSub, "it", sourceLang) || defaultSub;
+        if (!sEn) sEn = await translateText(defaultSub, "en", sourceLang) || defaultSub;
+        if (!sBn) sBn = await translateText(defaultSub, "bn", sourceLang) || defaultSub;
+        if (!sUr) sUr = await translateText(defaultSub, "ur", sourceLang) || defaultSub;
+
+        toast.dismiss(translationToast);
+      } catch (err) {
+        console.error("Auto-translation on save failed:", err);
+        toast.error("Errore nell'auto-traduzione di salvataggio, verranno usati i testi base.", { id: translationToast });
+        tIt = tIt || sourceTitle;
+        tEn = tEn || sourceTitle;
+        tBn = tBn || sourceTitle;
+        tUr = tUr || sourceTitle;
+        sIt = sIt || sourceSubtitle || tIt;
+        sEn = sEn || sourceSubtitle || tEn;
+        sBn = sBn || sourceSubtitle || tBn;
+        sUr = sUr || sourceSubtitle || tUr;
+      }
+    }
+
+    const updatedSlides = onboardingSlides.map(s => {
+      if (s.id === editingSlideId) {
+        return {
+          ...s,
+          title: tIt,
+          subtitle: sIt,
+          titles: {
+            it: tIt,
+            en: tEn,
+            bn: tBn,
+            ur: tUr
+          },
+          subtitles: {
+            it: sIt,
+            en: sEn,
+            bn: sBn,
+            ur: sUr
+          }
+        };
+      }
+      return s;
+    });
+
+    setOnboardingSlides(updatedSlides);
+    setEditingSlideId(null);
+    toast.success("Modifiche salvate con successo!");
+  };
+
+  const handleMoveOnboardSlideUp = (index: number) => {
+    if (index === 0) return;
+    const updated = [...onboardingSlides];
+    const temp = updated[index];
+    updated[index] = updated[index - 1];
+    updated[index - 1] = temp;
+    setOnboardingSlides(updated);
+    toast.success("Ordine aggiornato!");
+  };
+
+  const handleMoveOnboardSlideDown = (index: number) => {
+    if (index === onboardingSlides.length - 1) return;
+    const updated = [...onboardingSlides];
+    const temp = updated[index];
+    updated[index] = updated[index + 1];
+    updated[index + 1] = temp;
+    setOnboardingSlides(updated);
+    toast.success("Ordine aggiornato!");
+  };
+
   if (!isAuthenticated) {
     return (
       <div id="admin-login-container" className="min-h-screen bg-slate-50 flex flex-col justify-center items-center p-4">
@@ -697,7 +1110,7 @@ export default function AdminPanel() {
         </div>
 
         {/* Tab switch navigation bar */}
-        <div className="grid grid-cols-2 md:grid-cols-4 bg-white border border-slate-100 p-1.5 rounded-2xl gap-1.5 shadow-sm">
+        <div className="grid grid-cols-2 md:grid-cols-5 bg-white border border-slate-100 p-1.5 rounded-2xl gap-1.5 shadow-sm">
           <button
             onClick={() => setActiveTab('general')}
             className={`py-2.5 px-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
@@ -724,6 +1137,15 @@ export default function AdminPanel() {
           >
             <Upload className="w-4 h-4" />
             Gestione Tickers
+          </button>
+          <button
+            onClick={() => setActiveTab('onboarding')}
+            className={`py-2.5 px-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 ${
+              activeTab === 'onboarding' ? 'bg-[#004D40] text-white shadow-md' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+            }`}
+          >
+            <Layers className="w-4 h-4" />
+            Gestione Onboarding
           </button>
           <button
             onClick={() => setActiveTab('clients')}
@@ -1253,6 +1675,531 @@ export default function AdminPanel() {
                   )}
                 </div>
               </div>
+            </div>
+          </div>
+        ) : activeTab === 'onboarding' ? (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* NEW SECTION: "Gestione Onboarding" */}
+            <div className="bg-white border border-slate-100 p-6 rounded-3xl shadow-sm space-y-6">
+              <div className="border-b border-slate-100 pb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <h2 className="font-sans font-extrabold text-lg text-slate-900 tracking-tight flex items-center gap-2">
+                  <Layers className="w-5 h-5 text-[#004D40]" />
+                  Gestione Onboarding
+                </h2>
+                <span className="text-xs font-bold text-white bg-[#004D40] px-3 py-1 rounded-full">
+                  {onboardingSlides.length} / 10 Banner Attivi
+                </span>
+              </div>
+
+              <p className="text-xs text-slate-500">
+                Carica, modifica o elimina i banner dello slider dell'Onboarding (Pagina 3). Per ogni banner, puoi definire un titolo ed una descrizione tradotti in tutte e 4 le lingue supportate (Italiano, English, Bengali, Urdu).
+              </p>
+
+              {/* Form to Add New Onboarding Banner */}
+              <form onSubmit={handleAddOnboardSlide} className="bg-slate-50/60 border border-slate-100 rounded-2xl p-5 space-y-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-slate-100">
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <Plus className="w-4 h-4 text-[#004D40]" />
+                    Aggiungi Nuovo Banner (Max 10)
+                  </h3>
+
+                  <button
+                    type="button"
+                    disabled={isTranslatingNew || (!newOnboardTitleIt.trim() && !newOnboardTitleEn.trim() && !newOnboardSubtitleIt.trim() && !newOnboardSubtitleEn.trim())}
+                    onClick={handleAutoTranslateNew}
+                    className="bg-[#004D40] hover:bg-[#00332a] disabled:bg-slate-200 disabled:text-slate-400 text-white text-xs font-bold py-1.5 px-3.5 rounded-lg shadow-sm transition-all flex items-center gap-1.5 self-end sm:self-auto active:scale-[0.98]"
+                    title="Traduci istantaneamente nelle altre lingue"
+                  >
+                    {isTranslatingNew ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        Traduzione in corso...
+                      </>
+                    ) : (
+                      <>
+                        <Globe className="w-3.5 h-3.5" />
+                        ✨ Traduci in Automatico
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* Auto-Translation Info Helper Panel */}
+                <div className="bg-[#004D40]/5 rounded-xl p-3 border border-[#004D40]/10 text-xs text-slate-700 flex items-start gap-2.5">
+                  <Globe className="w-4 h-4 text-[#004D40] mt-0.5 flex-shrink-0" />
+                  <div>
+                    <span className="font-extrabold text-[#004D40]">💡 Suggerimento:</span> Inserisci il Titolo e la Descrizione in una sola lingua (es. Italiano o Inglese). Puoi cliccare su <strong>"Traduci in Automatico"</strong> in alto a destra per compilare e rivedere istantaneamente le traduzioni delle altre lingue, oppure lascia semplicemente i campi vuoti e il sistema li tradurrà automaticamente al momento del salvataggio!
+                  </div>
+                </div>
+
+                {/* Multilingual Titles Grid */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-extrabold text-slate-600 uppercase tracking-wider">Titoli Multilingua</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Italiano Title */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                        🇮🇹 Italiano (Principale)
+                      </label>
+                      <input
+                        type="text"
+                        value={newOnboardTitleIt}
+                        onChange={(e) => setNewOnboardTitleIt(e.target.value)}
+                        placeholder="Es: Wealink Money Transfer"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold"
+                        required={!newOnboardTitleEn}
+                      />
+                    </div>
+
+                    {/* English Title */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                        🇬🇧 English
+                      </label>
+                      <input
+                        type="text"
+                        value={newOnboardTitleEn}
+                        onChange={(e) => setNewOnboardTitleEn(e.target.value)}
+                        placeholder="Es: Wealink Money Transfer"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold"
+                        required={!newOnboardTitleIt}
+                      />
+                    </div>
+
+                    {/* Bengali Title */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                        🇧🇩 Bengali (বাংলা) <span className="text-[9px] text-[#004D40] lowercase font-normal">(Auto-generato)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={newOnboardTitleBn}
+                        onChange={(e) => setNewOnboardTitleBn(e.target.value)}
+                        placeholder="Lascia vuoto per auto-tradurre..."
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold bg-slate-50/30"
+                      />
+                    </div>
+
+                    {/* Pakistani Title */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase flex items-center gap-1">
+                        🇵🇰 Urdu (اردو) <span className="text-[9px] text-[#004D40] lowercase font-normal">(Auto-generato)</span>
+                      </label>
+                      <input
+                        type="text"
+                        value={newOnboardTitleUr}
+                        onChange={(e) => setNewOnboardTitleUr(e.target.value)}
+                        placeholder="Lascia vuoto per auto-tradurre..."
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold bg-slate-50/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Multilingual Subtitles Grid */}
+                <div className="space-y-3 pt-2">
+                  <h4 className="text-xs font-extrabold text-slate-600 uppercase tracking-wider">Descrizioni Multilingua</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Italiano Subtitle */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">🇮🇹 Italiano (Principale)</label>
+                      <textarea
+                        value={newOnboardSubtitleIt}
+                        onChange={(e) => setNewOnboardSubtitleIt(e.target.value)}
+                        placeholder="Es: Invia denaro in Bangladesh e Pakistan con le migliori tariffe garantite."
+                        rows={2}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold resize-none"
+                      />
+                    </div>
+
+                    {/* English Subtitle */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">🇬🇧 English</label>
+                      <textarea
+                        value={newOnboardSubtitleEn}
+                        onChange={(e) => setNewOnboardSubtitleEn(e.target.value)}
+                        placeholder="Es: Send money to Bangladesh and Pakistan with the best rates guaranteed."
+                        rows={2}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold resize-none"
+                      />
+                    </div>
+
+                    {/* Bengali Subtitle */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">🇧🇩 Bengali (বাংলা) <span className="text-[9px] text-[#004D40] lowercase font-normal">(Auto-generato)</span></label>
+                      <textarea
+                        value={newOnboardSubtitleBn}
+                        onChange={(e) => setNewOnboardSubtitleBn(e.target.value)}
+                        placeholder="Lascia vuoto per auto-tradurre..."
+                        rows={2}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold resize-none bg-slate-50/30"
+                      />
+                    </div>
+
+                    {/* Urdu Subtitle */}
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">🇵🇰 Urdu (اردو) <span className="text-[9px] text-[#004D40] lowercase font-normal">(Auto-generato)</span></label>
+                      <textarea
+                        value={newOnboardSubtitleUr}
+                        onChange={(e) => setNewOnboardSubtitleUr(e.target.value)}
+                        placeholder="Lascia vuoto per auto-tradurre..."
+                        rows={2}
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold resize-none bg-slate-50/30"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Banner Image Input with upload option */}
+                <div className="space-y-2 pt-2">
+                  <label className="text-xs font-extrabold text-slate-700 uppercase tracking-wider block">
+                    Immagine Banner
+                  </label>
+
+                  {newOnboardImage ? (
+                    <div className="relative border border-dashed border-emerald-300 bg-emerald-50/10 rounded-xl p-4 flex flex-col items-center justify-center gap-3">
+                      <div className="w-32 h-20 rounded-lg overflow-hidden border border-slate-200 shadow-sm">
+                        <img
+                          src={newOnboardImage}
+                          alt="Anteprima banner"
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setNewOnboardImage("")}
+                        className="text-xs font-bold text-red-600 hover:text-red-700 transition-colors bg-white border border-red-200 py-1.5 px-3 rounded-lg shadow-sm"
+                      >
+                        Sostituisci Immagine
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-center">
+                      <div className="md:col-span-2">
+                        <input
+                          type="text"
+                          value={newOnboardImage}
+                          onChange={(e) => setNewOnboardImage(e.target.value)}
+                          placeholder="Incolla l'URL dell'immagine..."
+                          className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs font-sans focus:border-[#004D40] focus:outline-none transition-all font-semibold"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <input
+                          id="new-onboard-picker"
+                          type="file"
+                          accept="image/png, image/jpeg, image/jpg, image/webp"
+                          onChange={handleNewOnboardFileChange}
+                          className="hidden"
+                        />
+                        <button
+                          type="button"
+                          disabled={newOnboardFileLoading}
+                          onClick={() => document.getElementById("new-onboard-picker")?.click()}
+                          className="w-full inline-flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50"
+                        >
+                          {newOnboardFileLoading ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-600" />
+                          ) : (
+                            <Upload className="w-3.5 h-3.5 text-slate-600" />
+                          )}
+                          Sfoglia File
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  {newOnboardValidationError && (
+                    <p className="text-xs font-semibold text-red-600 animate-pulse">{newOnboardValidationError}</p>
+                  )}
+                </div>
+
+                {/* Submit button */}
+                <div className="flex justify-end pt-3 border-t border-slate-100">
+                  <button
+                    type="submit"
+                    disabled={onboardingSlides.length >= 10 || !newOnboardImage || newOnboardFileLoading}
+                    className="bg-[#004D40] hover:bg-[#00332a] text-white font-sans font-bold py-2.5 px-5 rounded-xl transition-all flex items-center gap-2 shadow-md active:scale-[0.98] disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed"
+                  >
+                    <Plus className="w-4 h-4" />
+                    Aggiungi Banner Onboarding
+                  </button>
+                </div>
+              </form>
+
+              {/* Active Banner Control List (with inline editing / reordering) */}
+              <div className="space-y-4 pt-4">
+                <h3 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+                  <Layers className="w-4 h-4 text-[#004D40]" />
+                  Lista dei Banner Caricati
+                </h3>
+
+                <div className="overflow-hidden rounded-2xl border border-slate-100">
+                  <table className="w-full text-left border-collapse font-sans text-sm">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-100 text-slate-500 font-extrabold text-xs uppercase tracking-wider">
+                        <th className="p-4 w-16">Preview</th>
+                        <th className="p-4">Titolo / Sottotitolo (Italiano)</th>
+                        <th className="p-4">Traduzioni Attive</th>
+                        <th className="p-4 text-right w-44">Azioni & Ordine</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {onboardingSlides.map((slide, index) => {
+                        const hasIt = !!(slide.titles?.it || slide.title);
+                        const hasEn = !!(slide.titles?.en);
+                        const hasBn = !!(slide.titles?.bn);
+                        const hasUr = !!(slide.titles?.ur);
+
+                        return (
+                          <React.Fragment key={slide.id}>
+                            <tr className="hover:bg-slate-50/50 transition-colors">
+                              <td className="p-4">
+                                <div className="w-14 h-10 rounded-lg overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0">
+                                  <img
+                                    src={slide.url}
+                                    alt={slide.title}
+                                    className="w-full h-full object-cover"
+                                    referrerPolicy="no-referrer"
+                                  />
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <div className="max-w-md">
+                                  <div className="font-extrabold text-slate-900 line-clamp-1">
+                                    {slide.titles?.it || slide.title || "Wealink Transfer"}
+                                  </div>
+                                  <div className="text-xs text-slate-500 line-clamp-1 mt-0.5">
+                                    {slide.subtitles?.it || slide.subtitle || "Invia denaro in tutto il mondo."}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4">
+                                <div className="flex gap-1">
+                                  <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${hasIt ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-400'}`}>
+                                    IT
+                                  </span>
+                                  <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${hasEn ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-400'}`}>
+                                    EN
+                                  </span>
+                                  <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${hasBn ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-400'}`}>
+                                    BN
+                                  </span>
+                                  <span className={`inline-flex px-1.5 py-0.5 rounded text-[10px] font-bold ${hasUr ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' : 'bg-slate-100 text-slate-400'}`}>
+                                    UR
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="p-4 text-right">
+                                <div className="inline-flex items-center gap-1.5">
+                                  {/* Up Arrow */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMoveOnboardSlideUp(index)}
+                                    disabled={index === 0}
+                                    className="p-1.5 rounded-lg bg-slate-50 border border-slate-100 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-slate-50 text-slate-600 transition-colors cursor-pointer"
+                                    title="Sposta Su"
+                                  >
+                                    <ArrowUp className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {/* Down Arrow */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleMoveOnboardSlideDown(index)}
+                                    disabled={index === onboardingSlides.length - 1}
+                                    className="p-1.5 rounded-lg bg-slate-50 border border-slate-100 hover:bg-slate-100 disabled:opacity-30 disabled:hover:bg-slate-50 text-slate-600 transition-colors cursor-pointer"
+                                    title="Sposta Giù"
+                                  >
+                                    <ArrowDown className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {/* Edit Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleStartEditOnboardSlide(slide)}
+                                    className="p-1.5 rounded-lg bg-[#004D40]/5 text-[#004D40] hover:bg-[#004D40]/10 transition-colors cursor-pointer"
+                                    title="Modifica Traduzioni"
+                                  >
+                                    <Edit2 className="w-3.5 h-3.5" />
+                                  </button>
+
+                                  {/* Delete Button */}
+                                  <button
+                                    type="button"
+                                    onClick={() => handleDeleteOnboardSlide(slide.id)}
+                                    disabled={onboardingSlides.length <= 1}
+                                    className="p-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 disabled:opacity-30 transition-colors cursor-pointer"
+                                    title="Elimina"
+                                  >
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+
+                            {editingSlideId === slide.id && (
+                              <tr>
+                                <td colSpan={4} className="bg-[#004D40]/5 p-5 animate-in slide-in-from-top-2 duration-150">
+                                  <form onSubmit={handleSaveOnboardSlide} className="space-y-4">
+                                    <div className="flex items-center justify-between border-b border-[#004D40]/10 pb-2">
+                                      <h4 className="text-xs font-extrabold text-[#004D40] uppercase flex items-center gap-1.5">
+                                        <Edit2 className="w-3.5 h-3.5" />
+                                        Modifica Traduzioni Banner
+                                      </h4>
+                                      <button
+                                        type="button"
+                                        onClick={() => setEditingSlideId(null)}
+                                        className="text-xs font-bold text-slate-500 hover:text-slate-800"
+                                      >
+                                        Annulla
+                                      </button>
+                                    </div>
+
+                                    {/* Edit Auto-Translation trigger */}
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/60 rounded-xl p-3 border border-[#004D40]/10 text-xs">
+                                      <div className="text-[11px] text-slate-700 flex items-center gap-1.5">
+                                        <Globe className="w-3.5 h-3.5 text-[#004D40] flex-shrink-0 animate-pulse" />
+                                        <span>Modifica solo Italiano (o Inglese) e clicca per rigenerare le altre lingue:</span>
+                                      </div>
+                                      <button
+                                        type="button"
+                                        disabled={isTranslatingEdit || (!editingTitleIt.trim() && !editingTitleEn.trim() && !editingSubtitleIt.trim() && !editingSubtitleEn.trim())}
+                                        onClick={handleAutoTranslateEdit}
+                                        className="bg-[#004D40] hover:bg-[#00332a] disabled:bg-slate-200 disabled:text-slate-400 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all flex items-center gap-1.5 self-end sm:self-auto active:scale-[0.98]"
+                                      >
+                                        {isTranslatingEdit ? (
+                                          <>
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                            Traduzione...
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Globe className="w-3.5 h-3.5" />
+                                            ✨ Traduci in Automatico
+                                          </>
+                                        )}
+                                      </button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                      {/* Titles */}
+                                      <div className="space-y-2">
+                                        <h5 className="text-[10px] font-extrabold text-[#004D40] uppercase tracking-wider">Titoli</h5>
+                                        <div className="space-y-1.5">
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇮🇹 Italiano</label>
+                                            <input
+                                              type="text"
+                                              value={editingTitleIt}
+                                              onChange={(e) => setEditingTitleIt(e.target.value)}
+                                              placeholder="Italiano"
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                              required={!editingTitleEn}
+                                            />
+                                          </div>
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇬🇧 English</label>
+                                            <input
+                                              type="text"
+                                              value={editingTitleEn}
+                                              onChange={(e) => setEditingTitleEn(e.target.value)}
+                                              placeholder="English"
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                              required={!editingTitleIt}
+                                            />
+                                          </div>
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇧🇩 Bengali (বাংলা)</label>
+                                            <input
+                                              type="text"
+                                              value={editingTitleBn}
+                                              onChange={(e) => setEditingTitleBn(e.target.value)}
+                                              placeholder="Lascia vuoto per auto-tradurre..."
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                            />
+                                          </div>
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇵🇰 Urdu (اردو)</label>
+                                            <input
+                                              type="text"
+                                              value={editingTitleUr}
+                                              onChange={(e) => setEditingTitleUr(e.target.value)}
+                                              placeholder="Lascia vuoto per auto-tradurre..."
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      {/* Descriptions */}
+                                      <div className="space-y-2">
+                                        <h5 className="text-[10px] font-extrabold text-[#004D40] uppercase tracking-wider">Descrizioni</h5>
+                                        <div className="space-y-1.5">
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇮🇹 Italiano</label>
+                                            <textarea
+                                              value={editingSubtitleIt}
+                                              onChange={(e) => setEditingSubtitleIt(e.target.value)}
+                                              placeholder="Italiano"
+                                              rows={1}
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                            />
+                                          </div>
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇬🇧 English</label>
+                                            <textarea
+                                              value={editingSubtitleEn}
+                                              onChange={(e) => setEditingSubtitleEn(e.target.value)}
+                                              placeholder="English"
+                                              rows={1}
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                            />
+                                          </div>
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇧🇩 Bengali (বাংলা)</label>
+                                            <textarea
+                                              value={editingSubtitleBn}
+                                              onChange={(e) => setEditingSubtitleBn(e.target.value)}
+                                              placeholder="Lascia vuoto per auto-tradurre..."
+                                              rows={1}
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                            />
+                                          </div>
+                                          <div className="space-y-0.5">
+                                            <label className="text-[9px] text-slate-400 font-bold uppercase">🇵🇰 Urdu (اردو)</label>
+                                            <textarea
+                                              value={editingSubtitleUr}
+                                              onChange={(e) => setEditingSubtitleUr(e.target.value)}
+                                              placeholder="Lascia vuoto per auto-tradurre..."
+                                              rows={1}
+                                              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold"
+                                            />
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="flex justify-end pt-2">
+                                      <button
+                                        type="submit"
+                                        className="bg-[#004D40] hover:bg-[#00332a] text-white text-xs font-bold py-2 px-4 rounded-lg shadow"
+                                      >
+                                        Salva Modifiche
+                                      </button>
+                                    </div>
+                                  </form>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
             </div>
           </div>
         ) : (

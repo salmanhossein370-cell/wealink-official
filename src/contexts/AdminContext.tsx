@@ -19,6 +19,18 @@ export interface OnboardingSlide {
   url: string;
   title: string;
   subtitle: string;
+  titles?: {
+    it: string;
+    en: string;
+    bn: string;
+    ur: string;
+  };
+  subtitles?: {
+    it: string;
+    en: string;
+    bn: string;
+    ur: string;
+  };
 }
 
 interface AdminContextType {
@@ -80,18 +92,54 @@ const DEFAULT_ONBOARDING_SLIDES: OnboardingSlide[] = [
     url: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
     title: "Wealink Money Transfer",
     subtitle: "Invia denaro in Bangladesh e Pakistan con le migliori tariffe garantite.",
+    titles: {
+      it: "Wealink Money Transfer",
+      en: "Wealink Money Transfer",
+      bn: "উইলিঙ্ক মানি ট্রান্সফার",
+      ur: "وی لنک منی ٹرانسفر"
+    },
+    subtitles: {
+      it: "Invia denaro in Bangladesh e Pakistan con le migliori tariffe garantite.",
+      en: "Send money to Bangladesh and Pakistan with the best rates guaranteed.",
+      bn: "গ্যারান্টিযুক্ত সেরা রেট সহ বাংলাদেশ ও পাকিস্তানে টাকা পাঠান।",
+      ur: "بہترین گارنٹی شدہ ریٹ کے ساتھ بنگلہ دیش اور پاکستان رقم بھیجیں۔"
+    }
   },
   {
     id: "o2",
     url: "https://images.unsplash.com/photo-1563013544-824ae1d704d3?auto=format&fit=crop&w=800&q=80",
     title: "Ricariche Istantanee",
     subtitle: "Ricarica bKash, Nagad, Rocket e SIM locali italiane in pochi secondi.",
+    titles: {
+      it: "Ricariche Istantanee",
+      en: "Instant Top-ups",
+      bn: "তাৎক্ষণিক রিচার্জ",
+      ur: "فوری ٹاپ اپ"
+    },
+    subtitles: {
+      it: "Ricarica bKash, Nagad, Rocket e SIM locali italiane in pochi secondi.",
+      en: "Top-up bKash, Nagad, Rocket and local Italian SIM cards in seconds.",
+      bn: "কয়েক সেকেন্ডের মধ্যে বিকাশ, নগদ, রকেট এবং স্থানীয় ইতালীয় সিম রিচার্জ করুন।",
+      ur: "بکیش، نقد، راکٹ اور مقامی اطالوی سم کارڈز کو سیکنڈوں میں ٹاپ اپ کریں۔"
+    }
   },
   {
     id: "o3",
     url: "https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=800&q=80",
     title: "Sicuro e Trasparente",
     subtitle: "Nessun costo nascosto. Monitora il tuo trasferimento in tempo reale.",
+    titles: {
+      it: "Sicuro e Trasparente",
+      en: "Safe & Transparent",
+      bn: "নিরাপদ ও স্বচ্ছ",
+      ur: "محفوظ اور شفاف"
+    },
+    subtitles: {
+      it: "Nessun costo nascosto. Monitora il tuo trasferimento in tempo reale.",
+      en: "No hidden fees. Track your transfer in real time.",
+      bn: "কোন লুকানো চার্জ নেই। রিয়েল টাইমে আপনার স্থানান্তর ট্র্যাক করুন।",
+      ur: "کوئی پوشیدہ چارجز نہیں۔ حقیقی وقت میں اپنے ٹرانسفر کو ٹریک کریں۔"
+    }
   }
 ];
 
