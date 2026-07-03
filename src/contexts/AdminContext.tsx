@@ -14,6 +14,13 @@ export interface HeroSlide {
   subtitle: string;
 }
 
+export interface OnboardingSlide {
+  id: string;
+  url: string;
+  title: string;
+  subtitle: string;
+}
+
 interface AdminContextType {
   bankRate: number;
   setBankRate: (rate: number) => void;
@@ -37,6 +44,8 @@ interface AdminContextType {
   setPartners: (partners: any[]) => void;
   heroSlides: HeroSlide[];
   setHeroSlides: (slides: HeroSlide[]) => void;
+  onboardingSlides: OnboardingSlide[];
+  setOnboardingSlides: (slides: OnboardingSlide[]) => void;
   shopBanners: any[];
   bkashRate: number;
   nagadRate: number;
@@ -62,6 +71,27 @@ const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=800&q=80",
     title: "Travel & Ticketing",
     subtitle: "Prenotazione biglietti aerei, treni e visti turistici",
+  }
+];
+
+const DEFAULT_ONBOARDING_SLIDES: OnboardingSlide[] = [
+  {
+    id: "o1",
+    url: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80",
+    title: "Wealink Money Transfer",
+    subtitle: "Invia denaro in Bangladesh e Pakistan con le migliori tariffe garantite.",
+  },
+  {
+    id: "o2",
+    url: "https://images.unsplash.com/photo-1563013544-824ae1d704d3?auto=format&fit=crop&w=800&q=80",
+    title: "Ricariche Istantanee",
+    subtitle: "Ricarica bKash, Nagad, Rocket e SIM locali italiane in pochi secondi.",
+  },
+  {
+    id: "o3",
+    url: "https://images.unsplash.com/photo-1579621970795-87facc2f976d?auto=format&fit=crop&w=800&q=80",
+    title: "Sicuro e Trasparente",
+    subtitle: "Nessun costo nascosto. Monitora il tuo trasferimento in tempo reale.",
   }
 ];
 
@@ -271,6 +301,19 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
     return DEFAULT_HERO_SLIDES;
   });
+  
+  const [onboardingSlides, setOnboardingSlidesState] = useState<OnboardingSlide[]>(() => {
+    const saved = localStorage.getItem("wealink_onboarding_slides");
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return DEFAULT_ONBOARDING_SLIDES;
+      }
+    }
+    return DEFAULT_ONBOARDING_SLIDES;
+  });
+
   const [shopBanners] = useState<any[]>([]);
 
   const setTickerMoney = (logos: TickerLogo[]) => {
@@ -291,6 +334,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const setHeroSlides = (slides: HeroSlide[]) => {
     setHeroSlidesState(slides);
     localStorage.setItem("wealink_hero_slides", JSON.stringify(slides));
+  };
+
+  const setOnboardingSlides = (slides: OnboardingSlide[]) => {
+    setOnboardingSlidesState(slides);
+    localStorage.setItem("wealink_onboarding_slides", JSON.stringify(slides));
   };
 
   return (
@@ -317,6 +365,8 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
       setPartners,
       heroSlides,
       setHeroSlides,
+      onboardingSlides,
+      setOnboardingSlides,
       shopBanners,
       bkashRate: bkashMoneyRate,
       nagadRate: pinRate
@@ -353,6 +403,8 @@ export function useAdmin() {
       setPartners: () => {},
       heroSlides: DEFAULT_HERO_SLIDES,
       setHeroSlides: () => {},
+      onboardingSlides: DEFAULT_ONBOARDING_SLIDES,
+      setOnboardingSlides: () => {},
       shopBanners: [],
       bkashRate: 124.00,
       nagadRate: 123.00

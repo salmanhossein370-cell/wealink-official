@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
+import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { 
   ArrowLeft, 
@@ -41,12 +42,24 @@ interface WelcomeScreenProps {
 
 export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
   const navigate = useNavigate();
-  const { logoUrl, bkashRate, bankRate, pinRate, tickerMoney, tickerSim } = useAdmin();
+  const { logoUrl, bkashRate, bankRate, pinRate, tickerMoney, tickerSim, onboardingSlides } = useAdmin();
+  const { i18n } = useTranslation();
   
-  // Navigation states: 'welcome' | 'register_step1' | 'register_step2' | 'register_step3' | 'shop' | 'dashboard'
-  const [step, setStep] = useState<"welcome" | "register_step1" | "register_step2" | "register_step3" | "shop" | "dashboard">("welcome");
+  // Navigation states: 'welcome' | 'language' | 'intro_slider' | 'register_step1' | 'register_step2' | 'register_step3' | 'shop' | 'dashboard'
+  const [step, setStep] = useState<"welcome" | "language" | "intro_slider" | "register_step1" | "register_step2" | "register_step3" | "shop" | "dashboard">("welcome");
   const [ctaClicked, setCtaClicked] = useState(false);
   const [inizioClicked, setInizioClicked] = useState(false);
+  const [onboardingSlideIndex, setOnboardingSlideIndex] = useState(0);
+
+  // Auto-scroll logic for onboarding intro slider
+  useEffect(() => {
+    if (step === "intro_slider" && onboardingSlides && onboardingSlides.length > 0) {
+      const interval = setInterval(() => {
+        setOnboardingSlideIndex((prev) => (prev + 1) % onboardingSlides.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [step, onboardingSlides?.length]);
 
   const handleCtaClick = () => {
     if (ctaClicked) return;
@@ -61,7 +74,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
     if (inizioClicked) return;
     setInizioClicked(true);
     setTimeout(() => {
-      setStep("register_step1");
+      setStep("language");
       setTimeout(() => setInizioClicked(false), 500);
     }, 400);
   };
@@ -196,30 +209,72 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
     setIsOverlayAnimatingOut(false);
   };
 
+  const onboardingTranslations = {
+    it: {
+      langTitle: "Quale lingua parli?",
+      langSub: "Scegli la tua lingua preferita per personalizzare la tua esperienza su Wealink.",
+      btnNext: "Avanti",
+      btnCreate: "Crea un nuovo profilo",
+      btnHaveProfile: "Ho già un profilo",
+      btnBack: "Indietro",
+    },
+    en: {
+      langTitle: "Which language do you speak?",
+      langSub: "Choose your preferred language to customize your experience on Wealink.",
+      btnNext: "Next",
+      btnCreate: "Create a new profile",
+      btnHaveProfile: "I already have a profile",
+      btnBack: "Back",
+    },
+    bn: {
+      langTitle: "আপনি কোন ভাষায় কথা বলেন?",
+      langSub: "Wealink-এ আপনার অভিজ্ঞতা কাস্টমাইজ করতে আপনার পছন্দের ভাষা চয়ন করুন।",
+      btnNext: "পরবর্তী",
+      btnCreate: "একটি নতুন প্রোফাইল তৈরি করুন",
+      btnHaveProfile: "আমার ইতিমধ্যে একটি প্রোফail আছে",
+      btnBack: "পিছনে",
+    },
+    ur: {
+      langTitle: "آپ کونسی زبان بولتے ہیں؟",
+      langSub: "Wealink پر اپنے تجربے کو ذاتی بنانے کے لیے اپنی پسندیدہ زبان منتخب کریں۔",
+      btnNext: "اگلا",
+      btnCreate: "ایک نیا پروفائل بنائیں",
+      btnHaveProfile: "میرا پہلے سے ایک پروفائل ہے",
+      btnBack: "پیچھے",
+    }
+  };
+
+  const currentLang = (i18n.language || "it") as "it" | "en" | "bn" | "ur";
+  const tOnboarding = onboardingTranslations[currentLang] || onboardingTranslations.it;
+
   return (
     <div 
       id="welcome-onboarding-screen"
       className="fixed inset-0 z-[9998] bg-white text-slate-900 overflow-hidden font-sans select-none"
     >
-      {/* Sliding wrapper containing all six screens side-by-side */}
+      {/* Sliding wrapper containing all eight screens side-by-side */}
       <div 
-        className={`flex w-[600%] h-full transition-transform duration-500 ease-in-out ${
-          step === "register_step1" 
-            ? "-translate-x-[16.666%]" 
+        className={`flex w-[800%] h-full transition-transform duration-500 ease-in-out ${
+          step === "language" 
+            ? "-translate-x-[12.5%]" 
+            : step === "intro_slider" 
+            ? "-translate-x-[25%]" 
+            : step === "register_step1" 
+            ? "-translate-x-[37.5%]" 
             : step === "register_step2"
-            ? "-translate-x-[33.333%]"
-            : step === "register_step3"
             ? "-translate-x-[50%]"
+            : step === "register_step3"
+            ? "-translate-x-[62.5%]"
             : step === "shop"
-            ? "-translate-x-[66.666%]"
+            ? "-translate-x-[75%]"
             : step === "dashboard"
-            ? "-translate-x-[83.333%]"
+            ? "-translate-x-[87.5%]"
             : "translate-x-0"
         }`}
       >
         
         {/* ==================== SCHERMATA 1: WELCOME SCREEN ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-8 px-6 bg-white">
+        <div className="w-[12.5%] h-full flex flex-col justify-between py-8 px-6 bg-white">
           {/* Top spacer for perfect centering */}
           <div className="flex-1" />
 
@@ -307,14 +362,173 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           </div>
         </div>
 
+        {/* ==================== SCHERMATA 1.2: LINGUA SELECTION ==================== */}
+        <div className="w-[12.5%] h-full flex flex-col justify-between py-8 px-6 bg-white relative overflow-y-auto">
+          {/* Header Row with Back Button */}
+          <div className="w-full flex items-center justify-between pt-4">
+            <button 
+              onClick={() => setStep("welcome")}
+              className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700"
+              aria-label="Torna indietro"
+            >
+              <ArrowLeft className="w-6 h-6" />
+            </button>
+            <div className="w-10 h-10" /> {/* Spacer */}
+          </div>
+
+          {/* Central select container */}
+          <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-2">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight text-left mb-3">
+              {tOnboarding.langTitle}
+            </h2>
+            <p className="text-sm text-slate-500 font-medium mb-8">
+              {tOnboarding.langSub}
+            </p>
+
+            {/* List of elegant options */}
+            <div className="space-y-3 mb-8">
+              {[
+                { code: "it", label: "Italiano", sub: "Italian", flag: "🇮🇹" },
+                { code: "en", label: "English", sub: "English", flag: "🇬🇧" },
+                { code: "bn", label: "বাংলা", sub: "Bengali", flag: "🇧🇩" },
+                { code: "ur", label: "اردو", sub: "Urdu", flag: "🇵🇰" },
+              ].map((lang) => {
+                const isSelected = i18n.language === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => {
+                      i18n.changeLanguage(lang.code);
+                      toast.success(lang.code === 'it' ? `Lingua impostata: ${lang.label}` : `Language set to: ${lang.label}`);
+                    }}
+                    className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all duration-200 text-left active:scale-[0.99] ${
+                      isSelected
+                        ? "border-black bg-slate-50 shadow-sm font-semibold"
+                        : "border-slate-100 hover:border-slate-200 bg-white text-slate-700"
+                    }`}
+                  >
+                    <div className="flex items-center gap-3.5">
+                      <span className="text-2xl" role="img" aria-label={lang.label}>
+                        {lang.flag}
+                      </span>
+                      <div>
+                        <div className="text-sm font-bold text-slate-900 leading-none">
+                          {lang.label}
+                        </div>
+                        <div className="text-[11px] text-slate-400 mt-1 font-medium leading-none">
+                          {lang.sub}
+                        </div>
+                      </div>
+                    </div>
+                    {isSelected && (
+                      <div className="w-5 h-5 bg-black rounded-full flex items-center justify-center text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                      </div>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Action button */}
+          <div className="w-full pb-4 max-w-sm mx-auto">
+            <button
+              onClick={() => setStep("intro_slider")}
+              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-base h-14 rounded-full flex items-center justify-center tracking-wide shadow-md active:scale-[0.98] transition-all cursor-pointer"
+            >
+              {tOnboarding.btnNext}
+            </button>
+          </div>
+        </div>
+
+        {/* ==================== SCHERMATA 1.3: INTRO SLIDER ==================== */}
+        <div className="w-[12.5%] h-full flex flex-col justify-between py-8 px-6 bg-white relative overflow-y-auto">
+          {/* Header Row: Globe icon on top left to change language */}
+          <div className="w-full flex items-center justify-between pt-4">
+            <button 
+              onClick={() => setStep("language")}
+              className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 flex items-center gap-1.5 focus:outline-none"
+              title="Cambia Lingua"
+            >
+              <Globe className="w-5 h-5" />
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                {i18n.language === "it" ? "IT" : i18n.language === "bn" ? "BN" : i18n.language === "ur" ? "UR" : "EN"}
+              </span>
+            </button>
+            <div className="w-10 h-10" /> {/* Spacer */}
+          </div>
+
+          {/* Central content: Slider automatico & manuale */}
+          <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-2 my-auto">
+            
+            {/* Banner Container */}
+            <div className="relative w-full h-56 sm:h-64 rounded-[2rem] overflow-hidden border border-slate-100 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] bg-slate-50 flex-shrink-0">
+              <img 
+                src={onboardingSlides[onboardingSlideIndex]?.url || "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80"} 
+                alt="Banner slide" 
+                className="w-full h-full object-cover transition-all duration-700 ease-in-out scale-100" 
+              />
+            </div>
+
+            {/* Title & Subtitle under the banner */}
+            <div className="text-center mt-6 min-h-[90px] flex flex-col justify-start">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
+                {onboardingSlides[onboardingSlideIndex]?.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500 font-medium mt-2 leading-relaxed max-w-[90%] mx-auto">
+                {onboardingSlides[onboardingSlideIndex]?.subtitle}
+              </p>
+            </div>
+
+            {/* Dots under the texts */}
+            <div className="flex justify-center gap-1.5 mt-4 mb-6">
+              {onboardingSlides.slice(0, 10).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setOnboardingSlideIndex(index)}
+                  className={`h-1.5 rounded-full transition-all duration-300 focus:outline-none ${
+                    onboardingSlideIndex === index ? "w-4 bg-black" : "w-1.5 bg-slate-200 hover:bg-slate-300"
+                  }`}
+                  aria-label={`Vai alla slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Buttons: Two stacked overlay buttons */}
+          <div className="w-full space-y-2.5 pb-4 max-w-sm mx-auto">
+            <button
+              onClick={() => {
+                setStep("register_step1");
+                toast.success(i18n.language === "it" ? "Iniziamo la registrazione!" : "Let's start your registration!");
+              }}
+              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-sm h-14 rounded-full flex items-center justify-center tracking-wide shadow-md active:scale-[0.98] transition-all cursor-pointer"
+            >
+              {tOnboarding.btnCreate}
+            </button>
+            <button
+              onClick={() => {
+                setStep("register_step1");
+                toast.info(i18n.language === "it" ? "Accedi inserendo i tuoi dati o con Google Login" : "Access with your details or Google Login");
+              }}
+              className="w-full bg-transparent border border-black hover:bg-slate-50 text-black font-bold text-sm h-14 rounded-full flex items-center justify-center tracking-wide active:scale-[0.98] transition-all cursor-pointer"
+            >
+              {tOnboarding.btnHaveProfile}
+            </button>
+          </div>
+        </div>
+
         {/* ==================== SCHERMATA 2: ONBOARDING STEP 1 - REGISTRATION & GOOGLE LOGIN ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
+        <div className="w-[12.5%] h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
           
           {/* Header Row: Back button & Centered Wealink Logo */}
           <div className="w-full flex flex-col items-center pt-4 relative">
             <div className="absolute left-0 top-3">
               <button 
-                onClick={() => setStep("welcome")}
+                onClick={() => setStep("intro_slider")}
                 className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 focus:outline-none"
                 aria-label="Torna indietro"
               >
@@ -461,7 +675,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
         </div>
 
         {/* ==================== SCHERMATA 3: ONBOARDING STEP 2 - NATIONALITY SELECTION ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
+        <div className="w-[12.5%] h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
           
           {/* Top progress bar (Step 2/3) */}
           <div className="w-full">
@@ -558,7 +772,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
         </div>
 
         {/* ==================== SCHERMATA 4: ONBOARDING STEP 3 - PROFILE CONFIGURATION ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
+        <div className="w-[12.5%] h-full flex flex-col justify-between py-10 px-8 bg-white relative overflow-y-auto">
           
           {/* Top progress bar (Step 3/3) */}
           <div className="w-full">
@@ -669,7 +883,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
         </div>
 
         {/* ==================== SCHERMATA 3: HOME SCREEN (ORIGINALE RIPRISTINATA CON LOGOTICKER E COPOREGISTRAZIONE) ==================== */}
-        <div id="schermata-home-originale" className="w-1/6 h-full flex flex-col bg-white relative overflow-hidden">
+        <div id="schermata-home-originale" className="w-[12.5%] h-full flex flex-col bg-white relative overflow-hidden">
           
           {/* Scrollable Main Area */}
           <div className={`flex-1 overflow-y-auto pb-24 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden transition-all duration-700 ${
@@ -938,7 +1152,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
         </div>
 
         {/* ==================== SCHERMATA 4: FINTECH MOCK-DASHBOARD ==================== */}
-        <div className="w-1/6 h-full flex flex-col justify-between pt-56 pb-12 px-6 bg-white relative overflow-y-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        <div className="w-[12.5%] h-full flex flex-col justify-between pt-56 pb-12 px-6 bg-white relative overflow-y-auto scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           
           {/* FLOATING NOTIFICATION */}
           <div 
