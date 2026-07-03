@@ -17,7 +17,7 @@ createRoot(document.getElementById("root")!).render(<App />);
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker
-      .register("/sw.js")
+      .register("/service-worker.js")
       .then((registration) => {
         console.log("ServiceWorker registered successfully with scope: ", registration.scope);
       })
@@ -26,3 +26,14 @@ if ("serviceWorker" in navigator) {
       });
   });
 }
+
+// Global PWA Installation Event Handler
+window.addEventListener("beforeinstallprompt", (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault();
+  // Stash the event globally
+  (window as any).deferredPrompt = e;
+  // Dispatch custom event to notify components (like InstallBanner)
+  window.dispatchEvent(new CustomEvent("pwaPromptAvailable"));
+  console.log("PWA beforeinstallprompt event saved to global window.deferredPrompt instance.");
+});

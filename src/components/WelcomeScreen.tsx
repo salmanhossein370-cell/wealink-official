@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminContext";
 import { toast } from "sonner";
 import { 
@@ -39,6 +40,7 @@ interface WelcomeScreenProps {
 }
 
 export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
+  const navigate = useNavigate();
   const { logoUrl, bkashRate, bankRate, pinRate, tickerMoney, tickerSim } = useAdmin();
   
   // Navigation states: 'welcome' | 'register_step1' | 'register_step2' | 'register_step3' | 'shop' | 'dashboard'
@@ -807,7 +809,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                   } catch (e) {
                     console.warn(e);
                   }
-                  window.location.href = "/admin";
+                  navigate("/admin");
                 }}
                 className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-black py-2.5 px-5 rounded-full hover:bg-slate-100 hover:text-black transition-all active:scale-95 shadow-sm cursor-pointer"
               >

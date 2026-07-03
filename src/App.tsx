@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { AdminProvider } from "@/contexts/AdminContext";
 import SplashScreen from "@/components/SplashScreen";
 import WelcomeScreen from "@/components/WelcomeScreen";
+import InstallBanner from "@/components/InstallBanner";
 import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 import "@/i18n";
@@ -51,6 +52,7 @@ const App = () => {
           ) : (
             <BrowserRouter>
               <div className="w-full max-w-7xl mx-auto relative min-h-screen">
+                <InstallBanner />
                 <Routes>
                   <Route path="/" element={<WelcomeScreen />} />
                   <Route path="/admin" element={<AdminPanel />} />

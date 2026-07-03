@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Download, X } from "lucide-react";
+import { toast } from "sonner";
 import wealinkIcon from "@/assets/wealink-icon.png";
 
 interface BeforeInstallPromptEvent extends Event {
@@ -19,14 +20,29 @@ const InstallBanner = () => {
   });
 
   useEffect(() => {
+    // Check if the event was already captured globally
+    if ((window as any).deferredPrompt) {
+      setDeferredPrompt((window as any).deferredPrompt);
+    }
+
     const handleBeforeInstallPrompt = (e: Event) => {
       // Prevent Chrome 67 and earlier from automatically showing the prompt
       e.preventDefault();
+      // Stash the event globally
+      (window as any).deferredPrompt = e;
       // Stash the event so it can be triggered later.
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    // Also listen to custom global event trigger
+    const handleCustomPrompt = () => {
+      if ((window as any).deferredPrompt) {
+        setDeferredPrompt((window as any).deferredPrompt);
+      }
+    };
+    window.addEventListener("pwaPromptAvailable", handleCustomPrompt);
 
     // Check if the app is already running as a standalone PWA
     const isStandalone = window.matchMedia("(display-mode: standalone)").matches || 
@@ -35,27 +51,45 @@ const InstallBanner = () => {
       setIsVisible(false);
     }
 
+    // If dismissed in localStorage, don't show the banner
+    if (localStorage.getItem("wealink_pwa_banner_dismissed") === "true") {
+      setIsVisible(false);
+    }
+
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("pwaPromptAvailable", handleCustomPrompt);
     };
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
+    const activePrompt = deferredPrompt || (window as any).deferredPrompt;
+
+    if (!activePrompt) {
       console.log("PWA Install click simulated. Native browser prompt is not available in the preview environment.");
+      // Use sonner toast
+      toast.success("Installazione Simulata!", {
+        description: "La PWA verrà aggiunta alla tua home screen."
+      });
+      setIsVisible(false);
       return;
     }
 
-    // Show the native browser install prompt
-    await deferredPrompt.prompt();
+    try {
+      // Show the native browser install prompt
+      await activePrompt.prompt();
 
-    // Wait for the user to respond to the prompt
-    const { outcome } = await deferredPrompt.userChoice;
-    console.log(`PWA install prompt choice: ${outcome}`);
+      // Wait for the user to respond to the prompt
+      const { outcome } = await activePrompt.userChoice;
+      console.log(`PWA install prompt choice: ${outcome}`);
 
-    // Regardless of the outcome, we can clear the prompt state
-    setDeferredPrompt(null);
-    setIsVisible(false);
+      // Regardless of the outcome, we can clear the prompt state
+      setDeferredPrompt(null);
+      (window as any).deferredPrompt = null;
+      setIsVisible(false);
+    } catch (err) {
+      console.error("Errore durante l'installazione PWA:", err);
+    }
   };
 
   const handleDismiss = () => {
