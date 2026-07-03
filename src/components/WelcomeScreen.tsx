@@ -679,37 +679,37 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Header con banner del negozio reale */}
             <HeroSection />
 
-            {/* 3 PREMIUM TRUST TAGS */}
-            <div className="px-4 pt-4 pb-2">
-              <div className="grid grid-cols-3 gap-2">
+            {/* 3 PREMIUM TRUST TAGS - Distanziati con respiro */}
+            <div className="px-4 pt-8 pb-3">
+              <div className="grid grid-cols-3 gap-2.5">
                 {/* Tag 1 (Security) */}
-                <div className="bg-slate-50 border border-slate-200/60 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
-                  <div className="w-7 h-7 bg-slate-100 rounded-full flex items-center justify-center text-black mb-1.5">
-                    <ShieldCheck className="w-4 h-4" />
+                <div className="bg-slate-50 border border-slate-200/50 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
+                  <div className="w-7 h-7 bg-white rounded-full border border-slate-100 flex items-center justify-center text-slate-800 mb-1.5 shadow-sm">
+                    <ShieldCheck className="w-4 h-4 text-slate-700" />
                   </div>
-                  <span className="text-[9px] font-black text-slate-900 leading-tight">Guaranteed High Security</span>
+                  <span className="text-[9px] font-bold text-slate-800 leading-tight">Guaranteed High Security</span>
                 </div>
 
                 {/* Tag 2 (Social Proof) */}
-                <div className="bg-blue-50/40 border border-blue-500/10 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
-                  <div className="w-7 h-7 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mb-1.5">
-                    <Users className="w-4 h-4" />
+                <div className="bg-slate-50 border border-slate-200/50 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
+                  <div className="w-7 h-7 bg-white rounded-full border border-slate-100 flex items-center justify-center text-slate-800 mb-1.5 shadow-sm">
+                    <Users className="w-4 h-4 text-slate-700" />
                   </div>
-                  <span className="text-[9px] font-black text-blue-900 leading-tight">270+ Satisfied Clients</span>
+                  <span className="text-[9px] font-bold text-slate-800 leading-tight">270+ Satisfied Clients</span>
                 </div>
 
                 {/* Tag 3 (Authority) */}
-                <div className="bg-amber-50/40 border border-amber-500/10 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_2px_8px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
-                  <div className="w-7 h-7 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 mb-1.5">
-                    <Award className="w-4 h-4" />
+                <div className="bg-slate-50 border border-slate-200/50 rounded-xl p-2.5 flex flex-col items-center text-center shadow-[0_1px_2px_rgba(0,0,0,0.01)] hover:scale-[1.02] transition-transform">
+                  <div className="w-7 h-7 bg-white rounded-full border border-slate-100 flex items-center justify-center text-slate-800 mb-1.5 shadow-sm">
+                    <Award className="w-4 h-4 text-slate-700" />
                   </div>
-                  <span className="text-[9px] font-black text-amber-900 leading-tight">Highly Trusted Proprietor</span>
+                  <span className="text-[9px] font-bold text-slate-800 leading-tight">Highly Trusted Proprietor</span>
                 </div>
               </div>
             </div>
 
-            {/* Logo Tickers Scorrevoli (posizionati subito sotto i trust tags) */}
-            <div className="pt-5 pb-2 space-y-4">
+            {/* Logo Tickers Scorrevoli (posizionati sotto i trust tags con maggiore distanza verticale) */}
+            <div className="pt-10 pb-4 space-y-8">
               {/* SEZIONE MONEY TRANSFER LOGO TICKER */}
               <LogoTicker 
                 title="MONEY TRANSFER" 
@@ -728,7 +728,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
 
             {/* NUOVO: Titolo "All services needed in one platform" + Le 7 barre descrittive dei servizi */}
-            <div className="px-4 pt-4 pb-8">
+            <div className="px-4 pt-10 pb-8">
               <h2 className="text-[18px] font-black text-slate-900 leading-tight tracking-tight mb-5 uppercase">
                 All services needed in one platform
               </h2>
