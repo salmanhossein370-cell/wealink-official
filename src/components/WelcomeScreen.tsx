@@ -46,9 +46,13 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
   const { i18n } = useTranslation();
   
   // Navigation states: 'welcome' | 'language' | 'intro_slider' | 'register_step1' | 'register_step2' | 'register_step3' | 'shop' | 'dashboard'
-  const [step, setStep] = useState<"welcome" | "language" | "intro_slider" | "register_step1" | "register_step2" | "register_step3" | "shop" | "dashboard">("welcome");
+  const [step, setStep] = useState<"welcome" | "language" | "intro_slider" | "register_step1" | "register_step2" | "register_step3" | "shop" | "dashboard" >("welcome");
   const [ctaClicked, setCtaClicked] = useState(false);
   const [inizioClicked, setInizioClicked] = useState(false);
+  const [avantiClicked, setAvantiClicked] = useState(false);
+  const [creaProfiloClicked, setCreaProfiloClicked] = useState(false);
+  const [giaProfiloClicked, setGiaProfiloClicked] = useState(false);
+  const [pointerStartX, setPointerStartX] = useState<number | null>(null);
   const [onboardingSlideIndex, setOnboardingSlideIndex] = useState(0);
 
   // Auto-scroll logic for onboarding intro slider
@@ -60,6 +64,27 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
       return () => clearInterval(interval);
     }
   }, [step, onboardingSlides?.length]);
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setPointerStartX(e.clientX);
+  };
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    if (pointerStartX === null) return;
+    const pointerEndX = e.clientX;
+    const diff = pointerStartX - pointerEndX;
+
+    if (Math.abs(diff) > 40) { // Min swipe distance
+      if (diff > 0) {
+        // Swipe left -> Next slide
+        setOnboardingSlideIndex((prev) => (prev + 1) % onboardingSlides.length);
+      } else {
+        // Swipe right -> Prev slide
+        setOnboardingSlideIndex((prev) => (prev - 1 + onboardingSlides.length) % onboardingSlides.length);
+      }
+    }
+    setPointerStartX(null);
+  };
 
   const handleCtaClick = () => {
     if (ctaClicked) return;
@@ -76,6 +101,33 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
     setTimeout(() => {
       setStep("language");
       setTimeout(() => setInizioClicked(false), 500);
+    }, 400);
+  };
+
+  const handleAvantiClick = () => {
+    if (avantiClicked) return;
+    setAvantiClicked(true);
+    setTimeout(() => {
+      setStep("intro_slider");
+      setTimeout(() => setAvantiClicked(false), 500);
+    }, 400);
+  };
+
+  const handleCreaProfiloClick = () => {
+    if (creaProfiloClicked) return;
+    setCreaProfiloClicked(true);
+    setTimeout(() => {
+      setStep("register_step1");
+      setTimeout(() => setCreaProfiloClicked(false), 500);
+    }, 400);
+  };
+
+  const handleGiaProfiloClick = () => {
+    if (giaProfiloClicked) return;
+    setGiaProfiloClicked(true);
+    setTimeout(() => {
+      setStep("register_step1");
+      setTimeout(() => setGiaProfiloClicked(false), 500);
     }, 400);
   };
 
@@ -436,10 +488,32 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           {/* Action button */}
           <div className="w-full pb-4 max-w-sm mx-auto">
             <button
-              onClick={() => setStep("intro_slider")}
-              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-base h-14 rounded-full flex items-center justify-center tracking-wide shadow-md active:scale-[0.98] transition-all cursor-pointer"
+              onClick={handleAvantiClick}
+              className="group relative flex items-center justify-between w-full bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
             >
-              {tOnboarding.btnNext}
+              {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
+              <span className={`text-lg tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
+                avantiClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
+              }`}>
+                {tOnboarding.btnNext}
+              </span>
+
+              {/* Circular Icon Container (Slides from left to right on click) */}
+              <div 
+                className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
+                  avantiClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
+                }`}
+              >
+                {/* Arrow Icon 1 */}
+                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  avantiClicked ? "translate-x-10" : "group-hover:translate-x-10"
+                }`} />
+                
+                {/* Arrow Icon 2 */}
+                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  avantiClicked ? "translate-x-0" : "group-hover:translate-x-0"
+                }`} />
+              </div>
             </button>
           </div>
         </div>
@@ -465,11 +539,15 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="flex-1 flex flex-col justify-center max-w-sm mx-auto w-full px-2 my-auto">
             
             {/* Banner Container */}
-            <div className="relative w-full h-56 sm:h-64 rounded-[2rem] overflow-hidden border border-slate-100 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] bg-slate-50 flex-shrink-0">
+            <div 
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              className="relative w-full h-56 sm:h-64 rounded-[2rem] overflow-hidden border border-slate-100 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] bg-slate-50 flex-shrink-0 cursor-grab active:cursor-grabbing select-none touch-pan-y"
+            >
               <img 
                 src={onboardingSlides[onboardingSlideIndex]?.url || "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?auto=format&fit=crop&w=800&q=80"} 
                 alt="Banner slide" 
-                className="w-full h-full object-cover transition-all duration-700 ease-in-out scale-100" 
+                className="w-full h-full object-cover transition-all duration-700 ease-in-out scale-100 pointer-events-none select-none" 
               />
             </div>
 
@@ -499,24 +577,65 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           </div>
 
           {/* Bottom Buttons: Two stacked overlay buttons */}
-          <div className="w-full space-y-2.5 pb-4 max-w-sm mx-auto">
+          <div className="w-full space-y-3 pb-4 max-w-sm mx-auto">
+            {/* Button 1: Crea un nuovo profilo */}
             <button
-              onClick={() => {
-                setStep("register_step1");
-                toast.success(i18n.language === "it" ? "Iniziamo la registrazione!" : "Let's start your registration!");
-              }}
-              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-sm h-14 rounded-full flex items-center justify-center tracking-wide shadow-md active:scale-[0.98] transition-all cursor-pointer"
+              onClick={handleCreaProfiloClick}
+              className="group relative flex items-center justify-between w-full bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
             >
-              {tOnboarding.btnCreate}
+              {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
+              <span className={`text-sm sm:text-base tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
+                creaProfiloClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
+              }`}>
+                {tOnboarding.btnCreate}
+              </span>
+
+              {/* Circular Icon Container (Slides from left to right on click) */}
+              <div 
+                className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
+                  creaProfiloClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
+                }`}
+              >
+                {/* Arrow Icon 1 */}
+                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  creaProfiloClicked ? "translate-x-10" : "group-hover:translate-x-10"
+                }`} />
+                
+                {/* Arrow Icon 2 */}
+                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  creaProfiloClicked ? "translate-x-0" : "group-hover:translate-x-0"
+                }`} />
+              </div>
             </button>
+
+            {/* Button 2: Ho già un profilo */}
             <button
-              onClick={() => {
-                setStep("register_step1");
-                toast.info(i18n.language === "it" ? "Accedi inserendo i tuoi dati o con Google Login" : "Access with your details or Google Login");
-              }}
-              className="w-full bg-transparent border border-black hover:bg-slate-50 text-black font-bold text-sm h-14 rounded-full flex items-center justify-center tracking-wide active:scale-[0.98] transition-all cursor-pointer"
+              onClick={handleGiaProfiloClick}
+              className="group relative flex items-center justify-between w-full bg-transparent border-2 border-black text-black font-bold h-16 rounded-full overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:bg-slate-50 active:scale-[0.98] cursor-pointer"
             >
-              {tOnboarding.btnHaveProfile}
+              {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
+              <span className={`text-sm sm:text-base tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
+                giaProfiloClicked ? "pr-16 pl-6 text-slate-500" : "pl-16 pr-6 text-black"
+              }`}>
+                {tOnboarding.btnHaveProfile}
+              </span>
+
+              {/* Circular Icon Container (Slides from left to right on click) */}
+              <div 
+                className={`absolute top-1.5 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-sm overflow-hidden flex items-center justify-center ${
+                  giaProfiloClicked ? "left-[calc(100%-3.5rem)] bg-black text-white" : "left-2 bg-black text-white"
+                }`}
+              >
+                {/* Arrow Icon 1 */}
+                <ArrowRight className={`w-5 h-5 text-white transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  giaProfiloClicked ? "translate-x-10" : "group-hover:translate-x-10"
+                }`} />
+                
+                {/* Arrow Icon 2 */}
+                <ArrowRight className={`absolute w-5 h-5 text-white -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
+                  giaProfiloClicked ? "translate-x-0" : "group-hover:translate-x-0"
+                }`} />
+              </div>
             </button>
           </div>
         </div>
