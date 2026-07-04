@@ -361,16 +361,19 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
 
             {/* Brand Name */}
-            <h1 className="text-black text-5xl font-black tracking-widest uppercase mt-8 mb-4">
-              WEALINK
-            </h1>
+            <img 
+              src="/logo-wealink.png" 
+              alt="Wealink Logo" 
+              className="w-64 h-auto object-contain mt-8 mb-4"
+              referrerPolicy="no-referrer"
+            />
             
             {/* Slogans */}
-            <p className="text-gray-700 text-2xl font-semibold text-center leading-snug">
+            <p className="text-gray-700 text-3xl font-extrabold text-center leading-snug">
               Semplifica la tua vita.
             </p>
             
-            <p className="text-black text-xl font-extrabold tracking-wide mt-3 text-center">
+            <p className="text-black text-2xl font-black tracking-wide mt-4 text-center">
               Italia ↔ Bangladesh
             </p>
           </div>
@@ -385,7 +388,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               className="group relative flex items-center justify-between w-full bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
             >
               {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
-              <span className={`text-lg tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
+              <span className={`text-2xl font-extrabold tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
                 inizioClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
               }`}>
                 Inizia
@@ -430,7 +433,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight text-left mb-3">
               {tOnboarding.langTitle}
             </h2>
-            <p className="text-sm text-slate-500 font-medium mb-8">
+            <p className="text-lg sm:text-xl text-slate-600 font-bold mb-8">
               {tOnboarding.langSub}
             </p>
 
@@ -461,10 +464,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                         {lang.flag}
                       </span>
                       <div>
-                        <div className="text-sm font-bold text-slate-900 leading-none">
+                        <div className="text-lg font-extrabold text-slate-900 leading-none">
                           {lang.label}
                         </div>
-                        <div className="text-[11px] text-slate-400 mt-1 font-medium leading-none">
+                        <div className="text-base text-slate-600 mt-2 font-bold leading-none">
                           {lang.sub}
                         </div>
                       </div>
@@ -486,31 +489,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="w-full pb-4 max-w-sm mx-auto">
             <button
               onClick={handleAvantiClick}
-              className="group relative flex items-center justify-between w-full bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
+              className="w-full bg-black text-white font-extrabold h-16 rounded-full shadow-md hover:bg-slate-900 transition-all active:scale-[0.98] cursor-pointer text-center flex items-center justify-center"
             >
-              {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
-              <span className={`text-lg tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
-                avantiClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
-              }`}>
+              <span className="text-2xl font-extrabold tracking-wide">
                 {tOnboarding.btnNext}
               </span>
-
-              {/* Circular Icon Container (Slides from left to right on click) */}
-              <div 
-                className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
-                  avantiClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
-                }`}
-              >
-                {/* Arrow Icon 1 */}
-                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  avantiClicked ? "translate-x-10" : "group-hover:translate-x-10"
-                }`} />
-                
-                {/* Arrow Icon 2 */}
-                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  avantiClicked ? "translate-x-0" : "group-hover:translate-x-0"
-                }`} />
-              </div>
             </button>
           </div>
         </div>
@@ -584,11 +567,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             </div>
 
             {/* Title & Subtitle under the banner */}
-            <div className="text-center mt-6 min-h-[90px] flex flex-col justify-start">
-              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-snug">
+            <div className="text-center mt-6 min-h-[110px] flex flex-col justify-start">
+              <h3 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-snug">
                 {onboardingSlides[onboardingSlideIndex]?.titles?.[i18n.language as "it" | "en" | "bn" | "ur"] || onboardingSlides[onboardingSlideIndex]?.title}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-500 font-medium mt-2 leading-relaxed max-w-[90%] mx-auto">
+              <p className="text-lg sm:text-xl text-slate-600 font-bold mt-3.5 leading-relaxed max-w-[92%] mx-auto">
                 {onboardingSlides[onboardingSlideIndex]?.subtitles?.[i18n.language as "it" | "en" | "bn" | "ur"] || onboardingSlides[onboardingSlideIndex]?.subtitle}
               </p>
             </div>
@@ -613,61 +596,21 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Button 1: Crea un nuovo profilo */}
             <button
               onClick={handleCreaProfiloClick}
-              className="group relative flex items-center justify-between w-full bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg hover:shadow-black/10 active:scale-[0.98] cursor-pointer"
+              className="w-full bg-black text-white font-extrabold h-16 rounded-full shadow-md hover:bg-slate-900 transition-all active:scale-[0.98] cursor-pointer text-center flex items-center justify-center"
             >
-              {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
-              <span className={`text-sm sm:text-base tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
-                creaProfiloClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
-              }`}>
+              <span className="text-xl sm:text-2xl font-extrabold tracking-wide">
                 {tOnboarding.btnCreate}
               </span>
-
-              {/* Circular Icon Container (Slides from left to right on click) */}
-              <div 
-                className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
-                  creaProfiloClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
-                }`}
-              >
-                {/* Arrow Icon 1 */}
-                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  creaProfiloClicked ? "translate-x-10" : "group-hover:translate-x-10"
-                }`} />
-                
-                {/* Arrow Icon 2 */}
-                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  creaProfiloClicked ? "translate-x-0" : "group-hover:translate-x-0"
-                }`} />
-              </div>
             </button>
 
             {/* Button 2: Ho già un profilo */}
             <button
               onClick={handleGiaProfiloClick}
-              className="group relative flex items-center justify-between w-full bg-transparent border-2 border-black text-black font-bold h-16 rounded-full overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:bg-slate-50 active:scale-[0.98] cursor-pointer"
+              className="w-full bg-transparent border-2 border-black text-black font-extrabold h-16 rounded-full hover:bg-slate-50 transition-all active:scale-[0.98] cursor-pointer text-center flex items-center justify-center"
             >
-              {/* Text - centered perfectly with spacing adjusting to avoid overlap */}
-              <span className={`text-sm sm:text-base tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
-                giaProfiloClicked ? "pr-16 pl-6 text-slate-500" : "pl-16 pr-6 text-black"
-              }`}>
+              <span className="text-xl sm:text-2xl font-extrabold tracking-wide">
                 {tOnboarding.btnHaveProfile}
               </span>
-
-              {/* Circular Icon Container (Slides from left to right on click) */}
-              <div 
-                className={`absolute top-1.5 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-sm overflow-hidden flex items-center justify-center ${
-                  giaProfiloClicked ? "left-[calc(100%-3.5rem)] bg-black text-white" : "left-2 bg-black text-white"
-                }`}
-              >
-                {/* Arrow Icon 1 */}
-                <ArrowRight className={`w-5 h-5 text-white transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  giaProfiloClicked ? "translate-x-10" : "group-hover:translate-x-10"
-                }`} />
-                
-                {/* Arrow Icon 2 */}
-                <ArrowRight className={`absolute w-5 h-5 text-white -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  giaProfiloClicked ? "translate-x-0" : "group-hover:translate-x-0"
-                }`} />
-              </div>
             </button>
           </div>
         </div>
@@ -706,10 +649,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="w-full max-w-sm mx-auto px-2 mt-12 md:mt-16 flex-1 flex flex-col justify-center">
             
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 font-sans">
                 Crea il tuo account
               </h2>
-              <p className="text-xs text-slate-500 mt-2 font-medium">
+              <p className="text-lg sm:text-xl text-slate-600 mt-3 font-bold">
                 Inizia ad inviare denaro in modo semplice e sicuro
               </p>
             </div>
@@ -718,11 +661,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             <button
               type="button"
               onClick={() => setShowGoogleModal(true)}
-              className="w-full bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm h-12 px-4 rounded-full border border-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-start gap-4 transition-all active:scale-[0.98] focus:outline-none cursor-pointer relative"
+              className="w-full bg-white hover:bg-slate-50 text-slate-700 font-extrabold text-lg h-16 px-4 rounded-full border border-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center justify-start gap-4 transition-all active:scale-[0.98] focus:outline-none cursor-pointer relative"
             >
               {/* Google official flat logo SVG */}
-              <div className="flex-shrink-0 bg-white w-8 h-8 rounded-full flex items-center justify-center shadow-sm border border-slate-100">
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <div className="flex-shrink-0 bg-white w-10 h-10 rounded-full flex items-center justify-center shadow-sm border border-slate-100">
+                <svg className="w-6 h-6" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
                     d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.53-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.57-5.17 3.57-8.82z"
@@ -741,13 +684,13 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                   />
                 </svg>
               </div>
-              <span className="flex-1 text-center font-bold text-slate-700 pr-8">Continua con Google</span>
+              <span className="flex-1 text-center font-black text-xl text-slate-700 pr-10">Continua con Google</span>
             </button>
 
             {/* Separator block */}
             <div className="relative flex py-6 items-center">
               <div className="flex-grow border-t border-slate-100"></div>
-              <span className="flex-shrink mx-4 text-[10px] font-bold text-slate-400 tracking-widest uppercase">Oppure</span>
+              <span className="flex-shrink mx-4 text-xs font-black text-slate-500 tracking-widest uppercase">Oppure</span>
               <div className="flex-grow border-t border-slate-100"></div>
             </div>
 
@@ -755,40 +698,40 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             <form onSubmit={handleManualRegister} className="w-full space-y-5">
               
               {/* Nome */}
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-500 block uppercase tracking-wider pl-1">Nome</label>
+              <div className="space-y-2">
+                <label className="text-base font-black text-slate-700 block uppercase tracking-wider pl-1.5">Nome</label>
                 <input
                   type="text"
                   placeholder="Es. Mohammad"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-base font-bold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                   required
                 />
               </div>
 
               {/* Cognome */}
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-500 block uppercase tracking-wider pl-1">Cognome</label>
+              <div className="space-y-2">
+                <label className="text-base font-black text-slate-700 block uppercase tracking-wider pl-1.5">Cognome</label>
                 <input
                   type="text"
                   placeholder="Es. Hossein"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-base font-bold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                   required
                 />
               </div>
 
               {/* Numero di telefono */}
-              <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-slate-500 block uppercase tracking-wider pl-1">Numero di telefono</label>
+              <div className="space-y-2">
+                <label className="text-base font-black text-slate-700 block uppercase tracking-wider pl-1.5">Numero di telefono</label>
                 <div className="flex gap-3">
-                  <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-2xl px-4 py-3.5 select-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
+                  <div className="flex items-center gap-2.5 bg-white border border-slate-200 rounded-2xl px-5 py-4 select-none shadow-[0_1px_2px_rgba(0,0,0,0.02)]">
                     <span className="w-5 h-5 rounded-full overflow-hidden flex items-center justify-center border border-slate-100 shadow-sm text-sm">
                       🇮🇹
                     </span>
-                    <span className="text-sm font-bold text-slate-700">+39</span>
+                    <span className="text-base font-extrabold text-slate-700">+39</span>
                   </div>
                   <input
                     type="tel"
@@ -798,7 +741,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                       const cleanVal = e.target.value.replace(/[^0-9 ]/g, '');
                       setPhoneOnly(cleanVal);
                     }}
-                    className="flex-1 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+                    className="flex-1 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-base font-bold placeholder-slate-400 focus:border-black focus:ring-1 focus:ring-black focus:outline-none transition-all text-slate-800 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
                     required
                   />
                 </div>
@@ -808,7 +751,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
               <button
                 type="submit"
                 disabled={!firstName.trim() || !lastName.trim() || !phoneOnly.trim()}
-                className={`w-full font-bold text-base rounded-full py-4 text-center tracking-wide mt-8 transition-all duration-300 cursor-pointer ${
+                className={`w-full font-black text-2xl rounded-full py-4.5 text-center tracking-wide mt-8 transition-all duration-300 cursor-pointer ${
                   (!firstName.trim() || !lastName.trim() || !phoneOnly.trim())
                     ? "bg-slate-100 text-slate-400 cursor-not-allowed shadow-none"
                     : "bg-black text-white shadow-md shadow-black/10 hover:bg-slate-900 active:scale-[0.98]"
@@ -830,22 +773,11 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           
           {/* Top progress bar (Step 2/3) */}
           <div className="w-full">
-            {/* Back button */}
-            <div className="absolute left-4 top-6">
-              <button 
-                onClick={() => setStep("register_step1")}
-                className="p-2.5 rounded-full hover:bg-slate-100 active:scale-95 transition-all text-slate-700 focus:outline-none"
-                aria-label="Torna indietro"
-              >
-                <ArrowLeft className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Progress indicator */}
+            {/*             {/* Progress indicator */}
             <div className="mt-10 px-4">
-              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+              <div className="flex justify-between items-center text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-2">
                 <span>Passo 2 di 3</span>
-                <span className="text-slate-900 font-semibold">Nazionalità</span>
+                <span className="text-slate-900 font-extrabold">Nazionalità</span>
               </div>
               <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                 <div className="w-2/3 h-full bg-black rounded-full transition-all duration-500" />
@@ -857,10 +789,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="w-full max-w-sm mx-auto px-2 flex-1 flex flex-col justify-center mt-12 md:mt-16">
             
             <div className="text-center mb-10">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-slate-900 font-sans">
                 Seleziona la tua nazionalità
               </h2>
-              <p className="text-xs text-slate-500 mt-2 font-medium">
+              <p className="text-lg sm:text-xl text-slate-600 mt-3 font-bold">
                 Personalizzeremo la tua esperienza di invio denaro
               </p>
             </div>
@@ -879,8 +811,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                   <span className="text-4xl">🇧🇩</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">Bangladesh</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Seleziona nazionalità</p>
+                  <h3 className="text-xl font-black text-slate-900 leading-tight">Bangladesh</h3>
+                  <p className="text-base text-slate-600 mt-1 font-bold">Seleziona nazionalità</p>
                 </div>
                 {nationality === "Bangladesh" && (
                   <CheckCircle2 className="w-5 h-5 text-black flex-shrink-0 ml-auto" strokeWidth={2.5} />
@@ -900,8 +832,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                   <span className="text-4xl">🇵🇰</span>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-base font-bold text-slate-900 leading-tight">Pakistan</h3>
-                  <p className="text-xs text-slate-500 mt-0.5">Seleziona nazionalità</p>
+                  <h3 className="text-xl font-black text-slate-900 leading-tight">Pakistan</h3>
+                  <p className="text-base text-slate-600 mt-1 font-bold">Seleziona nazionalità</p>
                 </div>
                 {nationality === "Pakistan" && (
                   <CheckCircle2 className="w-5 h-5 text-black flex-shrink-0 ml-auto" strokeWidth={2.5} />
@@ -912,7 +844,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             {/* Primary Action Button (Procedi) - Google style */}
             <button
               onClick={() => setStep("register_step3")}
-              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-base rounded-full py-4 text-center tracking-wide mt-12 shadow-md shadow-black/10 active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full bg-black hover:bg-slate-900 text-white font-black text-2xl rounded-full py-4.5 text-center tracking-wide mt-12 shadow-md shadow-black/10 active:scale-[0.98] transition-all cursor-pointer"
             >
               Procedi
             </button>
@@ -940,9 +872,9 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
 
             {/* Progress indicator */}
             <div className="mt-10 px-4">
-              <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">
+              <div className="flex justify-between items-center text-xs font-extrabold uppercase tracking-widest text-slate-500 mb-2">
                 <span>Passo 3 di 3</span>
-                <span className="text-slate-900 font-bold">Completato</span>
+                <span className="text-slate-900 font-extrabold">Completato</span>
               </div>
               <div className="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
                 <div className="w-full h-full bg-black rounded-full transition-all duration-500" />
@@ -954,10 +886,10 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
           <div className="w-full max-w-sm mx-auto px-2 flex-1 flex flex-col justify-center items-center mt-12 md:mt-16">
             
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 font-sans">
+              <h2 className="text-3xl font-black tracking-tight text-slate-900 font-sans">
                 Aggiungi una foto profilo
               </h2>
-              <p className="text-xs text-slate-500 mt-2 font-medium">
+              <p className="text-lg sm:text-xl text-slate-600 mt-3 font-bold">
                 Un'immagine ti aiuta a personalizzare il tuo portale clienti
               </p>
             </div>
@@ -975,8 +907,8 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                     <div className="w-10 h-10 bg-slate-50 rounded-full flex items-center justify-center text-slate-500 mb-2 border border-slate-100">
                       <Users className="w-5 h-5 text-slate-600" />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Carica Foto</span>
-                    <span className="text-[8px] text-slate-400 mt-0.5">O lascia vuoto</span>
+                    <span className="text-sm font-black uppercase tracking-wider text-slate-600">Carica Foto</span>
+                    <span className="text-xs text-slate-500 mt-1 font-bold">O lascia vuoto</span>
                   </div>
                 )}
               </div>
@@ -1008,22 +940,22 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
             />
 
             {/* Automatic pre-filled Name display */}
-            <h2 className="text-xl font-bold text-slate-900 text-center leading-tight">
+            <h2 className="text-3xl font-extrabold text-slate-900 text-center leading-tight">
               {firstName} {lastName}
             </h2>
-            <div className="text-[11px] text-slate-500 font-medium tracking-wide mt-2.5 flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-100 rounded-full">
+            <div className="text-base text-slate-700 font-extrabold tracking-wide mt-3 flex items-center gap-1.5 px-4 py-1.5 bg-slate-50 border border-slate-100 rounded-full">
               <span>{nationality === "Bangladesh" ? "🇧🇩" : "🇵🇰"}</span>
               <span className="capitalize">{nationality}</span>
             </div>
 
-            <p className="text-xs text-slate-500 font-medium text-center mt-6 max-w-xs leading-relaxed">
+            <p className="text-lg sm:text-xl text-slate-700 font-bold text-center mt-8 max-w-xs leading-relaxed">
               Il tuo account è pronto. Ora puoi completare il profilo ed accedere a tutti i servizi di ricarica, spedizione e tariffe speciali.
             </p>
 
             {/* Complete onboarding CTA */}
             <button
               onClick={handleFinishOnboarding}
-              className="w-full bg-black hover:bg-slate-900 text-white font-bold text-base rounded-full py-4 text-center tracking-wide mt-10 shadow-md shadow-black/10 active:scale-[0.98] transition-all cursor-pointer"
+              className="w-full bg-black hover:bg-slate-900 text-white font-black text-2xl rounded-full py-4.5 text-center tracking-wide mt-10 shadow-md shadow-black/10 active:scale-[0.98] transition-all cursor-pointer"
             >
               Completa Profilo & Entra
             </button>
@@ -1180,35 +1112,15 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
 
 
 
-            {/* PREMIUM DASHBOARD CTA WITH ANIMATING CIRCLE LEFT-TO-RIGHT ON CLICK */}
-            <button
-              onClick={handleCtaClick}
-              className="group relative flex items-center justify-between w-[calc(100%-2rem)] mx-4 bg-black text-white font-bold h-16 rounded-full shadow-xl overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] hover:shadow-lg active:scale-[0.98] mt-10 mb-4 cursor-pointer"
-            >
-              {/* Text - positioned nicely so it does not overlap with the circle on the left or the right */}
-              <span className={`text-lg tracking-wide transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] w-full text-center ${
-                ctaClicked ? "pr-16 pl-6 text-slate-300" : "pl-16 pr-6 text-white"
-              }`}>
-                Accedi alla Dashboard
-              </span>
-
-              {/* Genzam Circular Icon Container (Slides from left to right on click) */}
-              <div 
-                className={`absolute top-2 w-12 h-12 rounded-full transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-110 shadow-md overflow-hidden flex items-center justify-center ${
-                  ctaClicked ? "left-[calc(100%-3.5rem)] bg-slate-100" : "left-2 bg-white"
-                }`}
+            {/* PREMIUM DASHBOARD CTA */}
+            <div className="px-4 mt-10 mb-4">
+              <button
+                onClick={handleCtaClick}
+                className="w-full bg-black hover:bg-slate-900 text-white font-black h-16 rounded-full shadow-md active:scale-[0.98] transition-all cursor-pointer text-center flex items-center justify-center text-2xl tracking-wide"
               >
-                {/* Arrow Icon 1 (visible initially, slides right on hover or click) */}
-                <ArrowRight className={`w-5 h-5 text-black transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  ctaClicked ? "translate-x-10" : "group-hover:translate-x-10"
-                }`} />
-                
-                {/* Arrow Icon 2 (hidden to left initially, slides to center on hover or click) */}
-                <ArrowRight className={`absolute w-5 h-5 text-black -translate-x-10 transition-transform duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                  ctaClicked ? "translate-x-0" : "group-hover:translate-x-0"
-                }`} />
-              </div>
-            </button>
+                Accedi alla Dashboard
+              </button>
+            </div>
 
             {/* TASTO ACCESSO AREA ADMIN */}
             <div className="px-4 pb-10 flex justify-center">
@@ -1221,7 +1133,7 @@ export default function WelcomeScreen({ onComplete }: WelcomeScreenProps = {}) {
                   }
                   navigate("/admin");
                 }}
-                className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-700 text-xs font-black py-2.5 px-5 rounded-full hover:bg-slate-100 hover:text-black transition-all active:scale-95 shadow-sm cursor-pointer"
+                className="inline-flex items-center gap-2 bg-slate-50 border border-slate-200 text-slate-700 text-sm font-black py-2.5 px-5 rounded-full hover:bg-slate-100 hover:text-black transition-all active:scale-95 shadow-sm cursor-pointer"
               >
                 <Lock className="w-3.5 h-3.5 text-black" />
                 Area Amministratore (Admin)
